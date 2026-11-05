@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"C:/SILOGICA/PROYECTOS/SILOGICA/SVGmotion/.codex/vexp-hint.sh\"",
+            "commandWindows": "cmd /d /c call \"C:\\SILOGICA\\PROYECTOS\\SILOGICA\\SVGmotion\\.codex\\vexp-hint.cmd\"",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}

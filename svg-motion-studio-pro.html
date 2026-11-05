@@ -1,0 +1,2214 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SVG Motion Studio Pro v4.0 - Suite Profesional de Animación Vectorial</title>
+  <meta name="description" content="Suite web avanzada sin dependencias para diseñar, optimizar, secuenciar y exportar SVGs animados con CSS puro, paletas reactivas y componentes universales.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0f17;
+      --card-bg: rgba(20, 27, 41, 0.88);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --accent: #38bdf8;
+      --accent-glow: rgba(56, 189, 248, 0.3);
+      --indigo: #6366f1;
+      --gold: #f59e0b;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --radius: 14px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.1) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(212, 155, 91, 0.08) 0px, transparent 50%);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    header {
+      padding: 0.85rem 2rem;
+      border-bottom: 1px solid var(--card-border);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      position: relative;
+      z-index: 20;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-weight: 700;
+      font-size: 1.15rem;
+    }
+
+    .badge-suite {
+      font-size: 0.7rem;
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(245, 158, 11, 0.2));
+      color: var(--accent);
+      padding: 0.2rem 0.65rem;
+      border-radius: 999px;
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      font-weight: 700;
+      letter-spacing: 0.03em;
+    }
+
+    .header-links {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .nav-link-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 0.35rem 0.75rem;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+      background: rgba(255, 255, 255, 0.03);
+      transition: all 0.2s ease;
+      pointer-events: auto;
+    }
+    .nav-link-btn:hover {
+      color: var(--text);
+      border-color: var(--accent);
+      background: rgba(56, 189, 248, 0.08);
+      transform: translateY(-1px);
+    }
+    .nav-link-btn.highlight {
+      color: var(--accent);
+      border-color: rgba(56, 189, 248, 0.4);
+      background: rgba(56, 189, 248, 0.12);
+    }
+
+    main {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 340px 1fr 410px;
+      gap: 1.25rem;
+      padding: 1.25rem 2rem;
+      max-width: 1840px;
+      margin: 0 auto;
+      width: 100%;
+      position: relative;
+      z-index: 10;
+    }
+
+    @media (max-width: 1300px) {
+      main { grid-template-columns: 1fr; }
+    }
+
+    .panel {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 1.2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      overflow-y: auto;
+      max-height: calc(100vh - 90px);
+      position: relative;
+      z-index: 15;
+      pointer-events: auto;
+    }
+
+    .panel-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .upload-zone {
+      border: 2px dashed rgba(255, 255, 255, 0.15);
+      border-radius: 10px;
+      padding: 1.1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: rgba(255, 255, 255, 0.02);
+      pointer-events: auto;
+    }
+
+    .upload-zone:hover {
+      border-color: var(--accent);
+      background: rgba(56, 189, 248, 0.05);
+    }
+
+    /* Stage */
+    .stage-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+      position: relative;
+      z-index: 12;
+      pointer-events: auto;
+    }
+
+    .stage {
+      flex: 1;
+      min-height: 480px;
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      transition: background 0.3s ease;
+      overflow: hidden;
+      border: 1px solid var(--card-border);
+      cursor: pointer;
+      pointer-events: auto;
+    }
+
+    .stage svg {
+      max-width: 75%;
+      max-height: 75%;
+      width: 300px;
+      height: 300px;
+      transform-origin: center center;
+      pointer-events: auto;
+    }
+
+    .stage-hint {
+      position: absolute;
+      bottom: 0.75rem;
+      right: 0.85rem;
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      background: rgba(0,0,0,0.65);
+      padding: 0.25rem 0.55rem;
+      border-radius: 6px;
+      border: 1px solid var(--card-border);
+      pointer-events: none !important;
+      user-select: none;
+    }
+
+    /* Animation Categories */
+    .category-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-top: 0.2rem;
+    }
+
+    .preset-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.35rem;
+      pointer-events: auto;
+    }
+
+    .preset-btn {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      padding: 0.5rem 0.45rem;
+      border-radius: 8px;
+      font-size: 0.76rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.3rem;
+      pointer-events: auto;
+      user-select: none;
+    }
+
+    .preset-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .preset-btn.active {
+      background: rgba(56, 189, 248, 0.18);
+      border-color: var(--accent);
+      color: var(--accent);
+      box-shadow: 0 0 12px var(--accent-glow);
+    }
+
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      pointer-events: auto;
+    }
+
+    .control-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.74rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .form-select {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.45);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      color: var(--text);
+      padding: 0.5rem 0.65rem;
+      font-size: 0.78rem;
+      font-family: inherit;
+      outline: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      pointer-events: auto;
+    }
+
+    .form-select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 8px var(--accent-glow);
+    }
+
+    .form-select option {
+      background: #0d1424;
+      color: #fff;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent);
+      cursor: pointer;
+      pointer-events: auto;
+    }
+
+    button {
+      font-family: inherit;
+      pointer-events: auto;
+    }
+
+    .btn-action {
+      background: linear-gradient(135deg, #0284c7, #38bdf8);
+      color: #0b0f17;
+      font-weight: 700;
+      border: none;
+      padding: 0.7rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-size: 0.82rem;
+      transition: all 0.2s ease;
+      pointer-events: auto;
+      user-select: none;
+    }
+    .btn-action:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 15px rgba(56, 189, 248, 0.35);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text);
+      font-weight: 600;
+      border: 1px solid var(--card-border);
+      padding: 0.55rem 0.9rem;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-size: 0.78rem;
+      transition: 0.2s;
+      pointer-events: auto;
+      user-select: none;
+    }
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .color-swatches { display: flex; gap: 0.4rem; pointer-events: auto; }
+    .color-dot {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+      pointer-events: auto;
+    }
+    .color-dot:hover { transform: scale(1.1); }
+    .color-dot.active { border-color: #fff; transform: scale(1.15); }
+
+    /* Accordions */
+    details {
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 0.55rem 0.75rem;
+      pointer-events: auto;
+    }
+    summary {
+      cursor: pointer;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--accent);
+      user-select: none;
+      pointer-events: auto;
+    }
+    textarea {
+      width: 100%;
+      background: rgba(0,0,0,0.4);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      color: #38bdf8;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      padding: 0.5rem;
+      margin-top: 0.4rem;
+      resize: vertical;
+      pointer-events: auto;
+    }
+
+    /* Export Format Tabs Grid */
+    .export-tabs-container {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 3px;
+      background: rgba(0, 0, 0, 0.35);
+      padding: 3px;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+      pointer-events: auto;
+    }
+    .export-tab {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 0.45rem 0.2rem;
+      font-size: 0.7rem;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      pointer-events: auto;
+      user-select: none;
+    }
+    .export-tab:hover {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .export-tab.active {
+      background: var(--accent);
+      color: #0b0f17;
+      font-weight: 700;
+      box-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    /* Animated Wrapper & Targets */
+    #svgWrapper {
+      transform-origin: center center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      transition: opacity 0.3s ease;
+      pointer-events: auto;
+    }
+
+    /* Layer Highlight Animation */
+    @keyframes layerPulseFlash {
+      0% { outline: 3px solid #38bdf8; outline-offset: 4px; }
+      50% { outline: 4px solid #38bdf8; outline-offset: 8px; }
+      100% { outline: none; }
+    }
+    .layer-highlight {
+      animation: layerPulseFlash 0.9s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    }
+
+    /* Color Tokens Chips */
+    .color-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid var(--card-border);
+      padding: 0.2rem 0.45rem;
+      border-radius: 6px;
+      font-size: 0.68rem;
+      font-family: 'JetBrains Mono', monospace;
+      pointer-events: auto;
+    }
+    .color-chip input[type="color"] {
+      -webkit-appearance: none;
+      border: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      cursor: pointer;
+      background: none;
+      padding: 0;
+      pointer-events: auto;
+    }
+    .color-chip input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+    .color-chip input[type="color"]::-webkit-color-swatch { border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; }
+
+    /* Custom Animation Pill Delete */
+    .custom-pill {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.2rem;
+      pointer-events: auto;
+    }
+    .custom-pill-del {
+      opacity: 0.6;
+      border: none;
+      background: transparent;
+      color: #ef4444;
+      cursor: pointer;
+      padding: 0 0.2rem;
+      font-size: 0.75rem;
+      transition: opacity 0.2s;
+      pointer-events: auto;
+    }
+    .custom-pill-del:hover { opacity: 1; }
+
+    /* Trigger Mode Styles for Live Canvas Preview */
+    #svgWrapper.trigger-mode-hover,
+    #svgWrapper.trigger-mode-hover .animated-target,
+    #svgWrapper.trigger-mode-hover [style*="animation"] {
+      animation-play-state: paused !important;
+    }
+    #stage:hover #svgWrapper.trigger-mode-hover,
+    #stage:hover #svgWrapper.trigger-mode-hover .animated-target,
+    #stage:hover #svgWrapper.trigger-mode-hover [style*="animation"],
+    #svgWrapper.trigger-mode-hover:hover,
+    #svgWrapper.trigger-mode-hover:hover .animated-target,
+    #svgWrapper.trigger-mode-hover:hover [style*="animation"] {
+      animation-play-state: running !important;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+        <polyline points="2 17 12 22 22 17"></polyline>
+        <polyline points="2 12 12 17 22 12"></polyline>
+      </svg>
+      <span>SVG Motion Studio Pro</span>
+      <span class="badge-suite">v4.0 Studio Suite</span>
+    </div>
+
+    <div class="header-links">
+      <a href="docs.html" class="nav-link-btn highlight" title="Manual exhaustivo y recetas de integración">
+        📚 Manual & Docs
+      </a>
+      <a href="https://github.com/bofersilo/SVGmotion" target="_blank" rel="noopener noreferrer" class="nav-link-btn" title="Repositorio en GitHub">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        GitHub
+      </a>
+    </div>
+  </header>
+
+  <main>
+    <!-- Columna 1: Importar, Paleta & Optimización -->
+    <div class="panel">
+      <div class="panel-title">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+        Entrada & Optimización
+      </div>
+
+      <div class="upload-zone" id="dropZone">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom:0.25rem; color: var(--accent);"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242M12 12v9m-4-4 4-4 4 4"/></svg>
+        <p style="font-size: 0.78rem; font-weight:600;">Arrastra o selecciona un SVG</p>
+        <input type="file" id="fileInput" accept=".svg,image/svg+xml" style="display: none;">
+      </div>
+
+      <div class="control-group">
+        <label class="control-label">SVG de prueba rápida:</label>
+        <button class="btn-secondary" id="btnSampleHexCore" style="justify-content: flex-start;">💎 Isotipo Isometric Core</button>
+      </div>
+
+      <!-- Limpiador & Optimizador SVG -->
+      <button class="btn-secondary" id="btnOptimizeSvg" style="justify-content: center; border-color: rgba(56, 189, 248, 0.3);">
+        <span>🧹 Optimizar & Limpiar SVG</span>
+        <span id="optimizeBadge" style="display:none; font-size:0.65rem; background:rgba(56,189,248,0.2); color:var(--accent); padding:0.1rem 0.4rem; border-radius:4px; font-weight:700;"></span>
+      </button>
+
+      <!-- Gestor de Color y Paleta Reactiva -->
+      <details id="colorPaletteDetails">
+        <summary>🎨 Paleta de Colores del SVG <span id="paletteCount" style="font-size:0.68rem; color:var(--accent); font-weight:700;"></span></summary>
+        <div style="margin-top: 0.45rem; display: flex; flex-direction: column; gap: 0.4rem;">
+          <div id="colorChipsList" style="display:flex; flex-wrap:wrap; gap:0.35rem; max-height:100px; overflow-y:auto;"></div>
+          <label style="font-size:0.71rem; color:var(--text-muted); display:flex; align-items:center; gap:0.4rem; cursor:pointer;">
+            <input type="checkbox" id="chkCssColorVariables"> Convertir a Variables CSS (<code>var(--color-*)</code>)
+          </label>
+        </div>
+      </details>
+
+      <div class="control-group">
+        <label class="control-label">Pegar código SVG directo:</label>
+        <textarea id="svgRawInput" rows="2" placeholder="<svg ...>...</svg>"></textarea>
+        <button class="btn-secondary" id="btnApplyCode" style="margin-top: 0.2rem;">Cargar código</button>
+      </div>
+
+      <!-- Editor de Nuevas Animaciones con Persistencia & Backup JSON -->
+      <details style="margin-top: auto;">
+        <summary>➕ Editor & Respaldo de Animaciones</summary>
+        <div style="margin-top: 0.45rem; display: flex; flex-direction: column; gap: 0.35rem;">
+          <input type="text" id="customName" placeholder="Nombre (ej: Ondulante)" style="background:rgba(0,0,0,0.4); border:1px solid var(--card-border); color:#fff; padding:0.4rem; border-radius:6px; font-size:0.73rem;">
+          <textarea id="customKeyframes" rows="4" placeholder="@keyframes customAnim {&#10;  0% { transform: scale(1); }&#10;  50% { transform: scale(1.15) rotate(5deg); }&#10;  100% { transform: scale(1); }&#10;}"></textarea>
+          <button class="btn-action" id="btnSaveCustom" style="font-size: 0.74rem; padding: 0.4rem;">💾 Guardar Preset</button>
+          
+          <div style="display:flex; gap:0.35rem; margin-top:0.25rem;">
+            <button class="btn-secondary" id="btnExportJsonPresets" style="flex:1; font-size:0.68rem; padding:0.35rem;">⬇️ Exportar JSON</button>
+            <button class="btn-secondary" id="btnImportJsonPresets" style="flex:1; font-size:0.68rem; padding:0.35rem;">⬆️ Importar JSON</button>
+            <input type="file" id="importJsonInput" accept=".json" style="display:none;">
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <!-- Columna 2: Canvas / Stage -->
+    <div class="stage-container">
+      <div class="stage" id="stage" style="background-color: #0c1a29;" title="Haz clic aquí para reiniciar la animación (modo Once / Scroll)">
+        <div id="svgWrapper" style="--duration: 2.5s;">
+          <svg id="activeSvg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 230" width="260" height="230">
+            <g id="cube-group">
+              <polygon id="facet-top" points="130,35 199,75 130,115 61,75" fill="#38bdf8"/>
+              <polygon id="facet-left" points="61,75 130,115 130,195 61,155" fill="#6366f1"/>
+              <polygon id="facet-right" points="130,115 199,75 199,155 130,195" fill="#4338ca"/>
+              <polygon id="facet-inner-glow" points="130,75 165,95 130,115 95,95" fill="#7dd3fc" opacity="0.6"/>
+              <polygon id="core-diamond" points="130,95 148,105 148,125 130,135 112,125 112,105" fill="#f59e0b"/>
+              <circle id="core-sphere" cx="130" cy="115" r="8" fill="#fbbf24"/>
+              <polygon id="accent-wing-top" points="130,15 142,28 118,28" fill="#38bdf8"/>
+              <polygon id="accent-wing-left" points="42,115 54,103 54,127" fill="#6366f1"/>
+              <polygon id="accent-wing-right" points="218,115 206,103 206,127" fill="#f59e0b"/>
+            </g>
+          </svg>
+        </div>
+        <div class="stage-hint" id="stageHint">🔄 Reproduciendo en bucle</div>
+      </div>
+
+      <div style="display: flex; align-items: center; justify-content: space-between; background: var(--card-bg); padding: 0.6rem 1rem; border-radius: 10px; border: 1px solid var(--card-border);">
+        <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">Lienzo:</span>
+        <div class="color-swatches">
+          <div class="color-dot active" style="background:#0c1a29;" data-bg="#0c1a29" title="Deep Navy"></div>
+          <div class="color-dot" style="background:#05070a;" data-bg="#05070a" title="Midnight Black"></div>
+          <div class="color-dot" style="background:#4b6b7c;" data-bg="#4b6b7c" title="Teal Slate"></div>
+          <div class="color-dot" style="background:#f8fafc;" data-bg="#f8fafc" title="Clean White"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Columna 3: Catálogo, Capas, Stagger & Exportar -->
+    <div class="panel">
+      <div class="panel-title">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+        Controles de Animación
+      </div>
+
+      <!-- 1. Inspector y Selector de Capas + Stagger -->
+      <div class="control-group">
+        <div class="control-label">
+          <span>🎯 Capa Objetivo (Layer Target)</span>
+          <span id="layerCountBadge" style="font-size:0.68rem; color:var(--accent);">Global</span>
+        </div>
+        <select id="layerSelect" class="form-select">
+          <option value="__all__">🎯 SVG Completo (Contenedor global)</option>
+          <option value="__stagger__">🌊 Cascada Multicapa (Stagger / Sequential)</option>
+        </select>
+      </div>
+
+      <!-- Control Deslizante de Desfase Stagger -->
+      <div class="control-group" id="staggerControlGroup" style="display:none; background:rgba(56,189,248,0.06); padding:0.5rem; border-radius:8px; border:1px solid rgba(56,189,248,0.2);">
+        <div class="control-label">
+          <span>Retardo entre capas (Stagger)</span>
+          <span id="staggerDelayVal" style="color:var(--accent); font-weight:700;">80ms</span>
+        </div>
+        <input type="range" id="staggerSlider" min="20" max="400" step="10" value="80">
+      </div>
+
+      <!-- 2. Selector de Disparador (Animation Triggers) -->
+      <div class="control-group">
+        <div class="control-label">
+          <span>⚡ Modo / Disparador (Trigger)</span>
+          <button id="btnReplayAnim" title="Reiniciar animación" style="background:transparent; border:none; color:var(--accent); cursor:pointer; font-size:0.75rem; display:none; font-weight:700;">↺ Repetir</button>
+        </div>
+        <select id="triggerSelect" class="form-select">
+          <option value="loop">🔄 Bucle Infinito (Loop)</option>
+          <option value="hover">👆 Al hacer Hover (:hover)</option>
+          <option value="once">▶️ Entrada / Una sola vez (Once / Forwards)</option>
+          <option value="scroll">📜 Scroll Reveal (In-View)</option>
+        </select>
+      </div>
+
+      <!-- 3. Selector de Curvas de Aceleración (Easing Engine) -->
+      <div class="control-group">
+        <div class="control-label">
+          <span>Curva de Aceleración (Easing)</span>
+        </div>
+        <select id="easingSelect" class="form-select">
+          <option value="ease-in-out">ease-in-out (Estándar suave)</option>
+          <option value="cubic-bezier(0.34, 1.56, 0.64, 1)">Spring / Rebote elástico</option>
+          <option value="cubic-bezier(0.16, 1, 0.3, 1)">Expo Out / Fluido estilo iOS</option>
+          <option value="cubic-bezier(0.7, 0, 0.84, 0)">Anticipate / Snap</option>
+          <option value="linear">linear (Constante)</option>
+        </select>
+      </div>
+
+      <!-- Control de Duración -->
+      <div class="control-group">
+        <div class="control-label">
+          <span>Duración de ciclo</span>
+          <span id="speedVal" style="color:var(--accent); font-weight:700;">2.5s</span>
+        </div>
+        <input type="range" id="speedSlider" min="0.4" max="6.0" step="0.1" value="2.5">
+      </div>
+
+      <!-- Catálogo de Efectos -->
+      <div class="category-title">Sutiles & Trazado</div>
+      <div class="preset-grid">
+        <button class="preset-btn active" data-anim="breathe">Respirar</button>
+        <button class="preset-btn" data-anim="heartbeat">Latido</button>
+        <button class="preset-btn" data-anim="float">Flotación</button>
+        <button class="preset-btn" data-anim="glow">Glow Pulse</button>
+        <button class="preset-btn" data-anim="strokeDraw" style="grid-column: span 2;">✍️ Dibujo / Stroke Draw</button>
+      </div>
+
+      <div class="category-title">Llamadas a la acción (Animate.css style)</div>
+      <div class="preset-grid">
+        <button class="preset-btn" data-anim="rubberBand">RubberBand</button>
+        <button class="preset-btn" data-anim="tada">Tada 🎉</button>
+        <button class="preset-btn" data-anim="jello">Jello Gelatina</button>
+        <button class="preset-btn" data-anim="swing">Swing Péndulo</button>
+        <button class="preset-btn" data-anim="wobble">Wobble</button>
+        <button class="preset-btn" data-anim="popIn">Pop Elastic</button>
+      </div>
+
+      <div class="category-title">Espaciales & 3D</div>
+      <div class="preset-grid">
+        <button class="preset-btn" data-anim="rotate3d">Moneda 3D</button>
+        <button class="preset-btn" data-anim="tilt3d">Inclinación Parallax</button>
+      </div>
+
+      <div id="customPresetContainer" style="display:none;">
+        <div class="category-title">Tus Animaciones Custom (Guardadas)</div>
+        <div class="preset-grid" id="customPresetGrid"></div>
+      </div>
+
+      <div style="border-top: 1px solid var(--card-border); margin: 0.25rem 0;"></div>
+
+      <!-- 5. Motor de Exportación Multiformato UI Suite -->
+      <div class="panel-title">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        Exportación Suite (8 Formatos)
+      </div>
+
+      <!-- Selector de formato (Tabs Grid) -->
+      <div class="export-tabs-container">
+        <button class="export-tab active" data-fmt="svg">SVG</button>
+        <button class="export-tab" data-fmt="symbol">Symbol</button>
+        <button class="export-tab" data-fmt="jsx">React</button>
+        <button class="export-tab" data-fmt="vue">Vue 3</button>
+        <button class="export-tab" data-fmt="svelte">Svelte 5</button>
+        <button class="export-tab" data-fmt="webcomponent">WebComp</button>
+        <button class="export-tab" data-fmt="astro">Astro</button>
+        <button class="export-tab" data-fmt="css">CSS</button>
+      </div>
+
+      <!-- Vista previa del código a exportar -->
+      <details id="exportPreviewDetails" style="margin-top: 0.1rem;">
+        <summary style="font-size:0.72rem;">👁️ Vista Previa del Código Generado</summary>
+        <pre id="exportCodePreview" style="background: rgba(0,0,0,0.5); padding: 0.55rem; border-radius: 6px; font-size: 0.65rem; color: #38bdf8; max-height: 120px; overflow: auto; margin-top: 0.35rem; white-space: pre-wrap; word-break: break-all; font-family: 'JetBrains Mono', monospace;"></pre>
+      </details>
+
+      <div style="display:flex; flex-direction:column; gap:0.35rem; margin-top:0.15rem;">
+        <button class="btn-action" id="btnDownloadCurrent">📥 Descargar Archivo</button>
+        <button class="btn-secondary" id="btnCopyCurrent">📋 Copiar al Portapapeles</button>
+      </div>
+    </div>
+  </main>
+
+  <style id="dynamicStyles">
+    /* Core Keyframes Registry */
+    @keyframes kf_breathe {
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 4px 10px rgba(0,0,0,0.2)); }
+      50% { transform: scale(1.07); filter: drop-shadow(0 15px 25px rgba(56, 189, 248, 0.4)); }
+    }
+    @keyframes kf_heartbeat {
+      0%, 100% { transform: scale(1); }
+      14% { transform: scale(1.15); }
+      28% { transform: scale(1.03); }
+      42% { transform: scale(1.2); }
+      70% { transform: scale(1); }
+    }
+    @keyframes kf_float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-16px) rotate(1.5deg); }
+    }
+    @keyframes kf_glow {
+      0%, 100% { filter: drop-shadow(0 0 5px rgba(245, 158, 11, 0.4)); transform: scale(1); }
+      50% { filter: drop-shadow(0 0 25px rgba(56, 189, 248, 0.8)); transform: scale(1.04); }
+    }
+    @keyframes kf_rubberBand {
+      0% { transform: scale3d(1, 1, 1); }
+      30% { transform: scale3d(1.25, 0.75, 1); }
+      40% { transform: scale3d(0.75, 1.25, 1); }
+      50% { transform: scale3d(1.15, 0.85, 1); }
+      65% { transform: scale3d(0.95, 1.05, 1); }
+      75% { transform: scale3d(1.05, 0.95, 1); }
+      100% { transform: scale3d(1, 1, 1); }
+    }
+    @keyframes kf_tada {
+      0% { transform: scale3d(1, 1, 1); }
+      10%, 20% { transform: scale3d(0.9, 0.9, 0.9) rotate3d(0, 0, 1, -3deg); }
+      30%, 50%, 70%, 90% { transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg); }
+      40%, 60%, 80% { transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg); }
+      100% { transform: scale3d(1, 1, 1); }
+    }
+    @keyframes kf_jello {
+      0%, 11.1%, 100% { transform: translate3d(0, 0, 0); }
+      22.2% { transform: skewX(-12.5deg) skewY(-12.5deg); }
+      33.3% { transform: skewX(6.25deg) skewY(6.25deg); }
+      44.4% { transform: skewX(-3.125deg) skewY(-3.125deg); }
+      55.5% { transform: skewX(1.5625deg) skewY(1.5625deg); }
+      66.6% { transform: skewX(-0.78deg) skewY(-0.78deg); }
+      77.7% { transform: skewX(0.39deg) skewY(0.39deg); }
+    }
+    @keyframes kf_swing {
+      20% { transform: rotate3d(0, 0, 1, 15deg); }
+      40% { transform: rotate3d(0, 0, 1, -10deg); }
+      60% { transform: rotate3d(0, 0, 1, 5deg); }
+      80% { transform: rotate3d(0, 0, 1, -5deg); }
+      100% { transform: rotate3d(0, 0, 1, 0deg); }
+    }
+    @keyframes kf_wobble {
+      0% { transform: translate3d(0, 0, 0); }
+      15% { transform: translate3d(-15%, 0, 0) rotate3d(0, 0, 1, -4deg); }
+      30% { transform: translate3d(12%, 0, 0) rotate3d(0, 0, 1, 3deg); }
+      45% { transform: translate3d(-9%, 0, 0) rotate3d(0, 0, 1, -2deg); }
+      60% { transform: translate3d(6%, 0, 0) rotate3d(0, 0, 1, 1deg); }
+      75% { transform: translate3d(-3%, 0, 0) rotate3d(0, 0, 1, -0.5deg); }
+      100% { transform: translate3d(0, 0, 0); }
+    }
+    @keyframes kf_popIn {
+      0% { transform: scale(0.6); opacity: 0.4; }
+      50% { transform: scale(1.15); opacity: 1; }
+      70% { transform: scale(0.95); }
+      100% { transform: scale(1); }
+    }
+    @keyframes kf_rotate3d {
+      0% { transform: perspective(600px) rotateY(0deg); }
+      50% { transform: perspective(600px) rotateY(180deg); }
+      100% { transform: perspective(600px) rotateY(360deg); }
+    }
+    @keyframes kf_tilt3d {
+      0%, 100% { transform: perspective(500px) rotateX(10deg) rotateY(-10deg); }
+      50% { transform: perspective(500px) rotateX(-10deg) rotateY(10deg); }
+    }
+  </style>
+
+  <script>
+    // Inicialización universal compatible con Firefox (Gecko), WebKit y Chromium
+    document.addEventListener('DOMContentLoaded', () => {
+      // State Management
+      let currentAnimKey = 'breathe';
+      let currentDuration = 2.5;
+      let currentEasing = 'ease-in-out';
+      let currentTargetLayer = '__all__';
+      let currentTrigger = 'loop';
+      let currentStaggerDelay = 80;
+      let currentExportFormat = 'svg';
+      let detectedColors = [];
+
+      const STORAGE_KEY = 'svg_motion_custom_anims';
+
+      const animations = {
+        breathe: { name: 'Respirar', keyframe: `@keyframes svgMotion { 0%, 100% { transform: scale(1); filter: drop-shadow(0 4px 10px rgba(0,0,0,0.2)); } 50% { transform: scale(1.07); filter: drop-shadow(0 15px 25px rgba(56, 189, 248, 0.4)); } }` },
+        heartbeat: { name: 'Latido', keyframe: `@keyframes svgMotion { 0%, 100% { transform: scale(1); } 14% { transform: scale(1.15); } 28% { transform: scale(1.03); } 42% { transform: scale(1.2); } 70% { transform: scale(1); } }` },
+        float: { name: 'Flotación', keyframe: `@keyframes svgMotion { 0%, 100% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-16px) rotate(1.5deg); } }` },
+        glow: { name: 'Glow Pulse', keyframe: `@keyframes svgMotion { 0%, 100% { filter: drop-shadow(0 0 5px rgba(245, 158, 11, 0.4)); transform: scale(1); } 50% { filter: drop-shadow(0 0 25px rgba(56, 189, 248, 0.8)); transform: scale(1.04); } }` },
+        strokeDraw: { name: 'Dibujo / Stroke Draw', keyframe: `@keyframes svgMotion { 0% { stroke-dashoffset: 1200; fill-opacity: 0; } 60% { stroke-dashoffset: 0; fill-opacity: 0; } 85%, 100% { stroke-dashoffset: 0; fill-opacity: 1; } }` },
+        rubberBand: { name: 'RubberBand', keyframe: `@keyframes svgMotion { 0% { transform: scale3d(1, 1, 1); } 30% { transform: scale3d(1.25, 0.75, 1); } 40% { transform: scale3d(0.75, 1.25, 1); } 50% { transform: scale3d(1.15, 0.85, 1); } 65% { transform: scale3d(0.95, 1.05, 1); } 75% { transform: scale3d(1.05, 0.95, 1); } 100% { transform: scale3d(1, 1, 1); } }` },
+        tada: { name: 'Tada', keyframe: `@keyframes svgMotion { 0% { transform: scale3d(1, 1, 1); } 10%, 20% { transform: scale3d(0.9, 0.9, 0.9) rotate3d(0, 0, 1, -3deg); } 30%, 50%, 70%, 90% { transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg); } 40%, 60%, 80% { transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg); } 100% { transform: scale3d(1, 1, 1); } }` },
+        jello: { name: 'Jello', keyframe: `@keyframes svgMotion { 0%, 11.1%, 100% { transform: translate3d(0, 0, 0); } 22.2% { transform: skewX(-12.5deg) skewY(-12.5deg); } 33.3% { transform: skewX(6.25deg) skewY(6.25deg); } 44.4% { transform: skewX(-3.125deg) skewY(-3.125deg); } 55.5% { transform: skewX(1.5625deg) skewY(1.5625deg); } 66.6% { transform: skewX(-0.78deg) skewY(-0.78deg); } 77.7% { transform: skewX(0.39deg) skewY(0.39deg); } }` },
+        swing: { name: 'Swing', keyframe: `@keyframes svgMotion { 20% { transform: rotate3d(0, 0, 1, 15deg); } 40% { transform: rotate3d(0, 0, 1, -10deg); } 60% { transform: rotate3d(0, 0, 1, 5deg); } 80% { transform: rotate3d(0, 0, 1, -5deg); } 100% { transform: rotate3d(0, 0, 1, 0deg); } }` },
+        wobble: { name: 'Wobble', keyframe: `@keyframes svgMotion { 0% { transform: translate3d(0, 0, 0); } 15% { transform: translate3d(-15%, 0, 0) rotate3d(0, 0, 1, -4deg); } 30% { transform: translate3d(12%, 0, 0) rotate3d(0, 0, 1, 3deg); } 45% { transform: translate3d(-9%, 0, 0) rotate3d(0, 0, 1, -2deg); } 60% { transform: translate3d(6%, 0, 0) rotate3d(0, 0, 1, 1deg); } 75% { transform: translate3d(-3%, 0, 0) rotate3d(0, 0, 1, -0.5deg); } 100% { transform: translate3d(0, 0, 0); } }` },
+        popIn: { name: 'Pop Elastic', keyframe: `@keyframes svgMotion { 0% { transform: scale(0.6); opacity: 0.4; } 50% { transform: scale(1.15); opacity: 1; } 70% { transform: scale(0.95); } 100% { transform: scale(1); } }` },
+        rotate3d: { name: 'Giro 3D', keyframe: `@keyframes svgMotion { 0% { transform: perspective(600px) rotateY(0deg); } 50% { transform: perspective(600px) rotateY(180deg); } 100% { transform: perspective(600px) rotateY(360deg); } }` },
+        tilt3d: { name: 'Tilt 3D', keyframe: `@keyframes svgMotion { 0%, 100% { transform: perspective(500px) rotateX(10deg) rotateY(-10deg); } 50% { transform: perspective(500px) rotateX(-10deg) rotateY(10deg); } }` }
+      };
+
+      // Referencias DOM protegidas
+      const wrapper = document.getElementById('svgWrapper');
+      const speedSlider = document.getElementById('speedSlider');
+      const speedVal = document.getElementById('speedVal');
+      const stage = document.getElementById('stage');
+      const stageHint = document.getElementById('stageHint');
+      const layerSelect = document.getElementById('layerSelect');
+      const triggerSelect = document.getElementById('triggerSelect');
+      const easingSelect = document.getElementById('easingSelect');
+      const layerCountBadge = document.getElementById('layerCountBadge');
+      const btnReplayAnim = document.getElementById('btnReplayAnim');
+      const staggerControlGroup = document.getElementById('staggerControlGroup');
+      const staggerSlider = document.getElementById('staggerSlider');
+      const staggerDelayVal = document.getElementById('staggerDelayVal');
+      const colorChipsList = document.getElementById('colorChipsList');
+      const paletteCount = document.getElementById('paletteCount');
+      const chkCssColorVariables = document.getElementById('chkCssColorVariables');
+      const btnOptimizeSvg = document.getElementById('btnOptimizeSvg');
+      const optimizeBadge = document.getElementById('optimizeBadge');
+      const exportCodePreview = document.getElementById('exportCodePreview');
+
+      // 1. Inspector de Capas & Stagger Parser
+      function parseAndPopulateLayers() {
+        const activeSvg = document.getElementById('activeSvg');
+        if (!activeSvg) return;
+
+        layerSelect.innerHTML = `
+          <option value="__all__">🎯 SVG Completo (Contenedor global)</option>
+          <option value="__stagger__">🌊 Cascada Multicapa (Stagger / Sequential)</option>
+        `;
+
+        const elements = activeSvg.querySelectorAll('g, path, polygon, rect, circle, polyline, ellipse, text');
+        let counters = {};
+        let validLayers = 0;
+
+        elements.forEach((el) => {
+          if (el.closest('defs, clipPath, mask')) return;
+
+          const tag = el.tagName.toLowerCase();
+          if (!el.id) {
+            counters[tag] = (counters[tag] || 0) + 1;
+            el.id = `layer-${tag}-${counters[tag]}`;
+          }
+          el.dataset.staggerIdx = validLayers;
+
+          const opt = document.createElement('option');
+          opt.value = el.id;
+          opt.textContent = `${tag.toUpperCase()} — #${el.id}`;
+          layerSelect.appendChild(opt);
+          validLayers++;
+        });
+
+        layerCountBadge.textContent = validLayers > 0 ? `${validLayers} capas` : 'Global';
+        currentTargetLayer = '__all__';
+        layerSelect.value = '__all__';
+        if (staggerControlGroup) staggerControlGroup.style.display = 'none';
+
+        scanSvgColors();
+      }
+
+      // 2. Gestor de Color y Paleta Reactiva
+      function normalizeColor(colorStr) {
+        if (!colorStr) return null;
+        colorStr = colorStr.trim().toLowerCase();
+        if (['none', 'transparent', 'currentcolor', 'inherit'].includes(colorStr)) return null;
+
+        if (colorStr.startsWith('#')) {
+          if (colorStr.length === 4) {
+            return '#' + colorStr[1] + colorStr[1] + colorStr[2] + colorStr[2] + colorStr[3] + colorStr[3];
+          }
+          return colorStr.slice(0, 7);
+        }
+        if (colorStr.startsWith('rgb')) {
+          const parts = colorStr.match(/\d+/g);
+          if (parts && parts.length >= 3) {
+            const r = parseInt(parts[0], 10).toString(16).padStart(2, '0');
+            const g = parseInt(parts[1], 10).toString(16).padStart(2, '0');
+            const b = parseInt(parts[2], 10).toString(16).padStart(2, '0');
+            return `#${r}${g}${b}`;
+          }
+        }
+        return colorStr;
+      }
+
+      function scanSvgColors() {
+        const activeSvg = document.getElementById('activeSvg');
+        if (!activeSvg) return;
+
+        const colorSet = new Set();
+        const allEls = activeSvg.querySelectorAll('*');
+
+        allEls.forEach(el => {
+          const fill = el.getAttribute('fill');
+          const stroke = el.getAttribute('stroke');
+          const nFill = normalizeColor(fill);
+          const nStroke = normalizeColor(stroke);
+          if (nFill) colorSet.add(nFill);
+          if (nStroke) colorSet.add(nStroke);
+
+          if (el.style) {
+            const sFill = normalizeColor(el.style.fill);
+            const sStroke = normalizeColor(el.style.stroke);
+            if (sFill) colorSet.add(sFill);
+            if (sStroke) colorSet.add(sStroke);
+          }
+        });
+
+        detectedColors = Array.from(colorSet);
+        if (paletteCount) paletteCount.textContent = `(${detectedColors.length})`;
+        renderColorChips();
+      }
+
+      function renderColorChips() {
+        if (!colorChipsList) return;
+        colorChipsList.innerHTML = '';
+        if (detectedColors.length === 0) {
+          colorChipsList.innerHTML = '<span style="font-size:0.7rem; color:var(--text-muted);">Sin colores detectados</span>';
+          return;
+        }
+
+        detectedColors.forEach((hex, idx) => {
+          const chip = document.createElement('div');
+          chip.className = 'color-chip';
+
+          const input = document.createElement('input');
+          input.type = 'color';
+          input.value = hex.startsWith('#') ? hex : '#38bdf8';
+          input.dataset.orig = hex;
+
+          const label = document.createElement('span');
+          label.textContent = hex;
+
+          input.addEventListener('input', (e) => {
+            const newColor = e.target.value;
+            const oldColor = input.dataset.orig;
+            swapSvgColor(oldColor, newColor);
+            input.dataset.orig = newColor;
+            label.textContent = newColor;
+            detectedColors[idx] = newColor;
+            updateExportPreview();
+          });
+
+          chip.appendChild(input);
+          chip.appendChild(label);
+          colorChipsList.appendChild(chip);
+        });
+      }
+
+      function swapSvgColor(oldColor, newColor) {
+        const activeSvg = document.getElementById('activeSvg');
+        if (!activeSvg) return;
+
+        const normOld = oldColor.toLowerCase();
+        const allEls = activeSvg.querySelectorAll('*');
+
+        allEls.forEach(el => {
+          const fill = el.getAttribute('fill');
+          if (fill && normalizeColor(fill) === normOld) {
+            el.setAttribute('fill', newColor);
+          }
+          const stroke = el.getAttribute('stroke');
+          if (stroke && normalizeColor(stroke) === normOld) {
+            el.setAttribute('stroke', newColor);
+          }
+          if (el.style && el.style.fill && normalizeColor(el.style.fill) === normOld) {
+            el.style.fill = newColor;
+          }
+          if (el.style && el.style.stroke && normalizeColor(el.style.stroke) === normOld) {
+            el.style.stroke = newColor;
+          }
+        });
+      }
+
+      // 3. Limpiador y Optimizador SVG
+      if (btnOptimizeSvg) {
+        btnOptimizeSvg.addEventListener('click', (e) => {
+          e.preventDefault();
+          const activeSvg = document.getElementById('activeSvg');
+          if (!activeSvg) return;
+
+          const origXml = new XMLSerializer().serializeToString(activeSvg);
+          const origSize = new Blob([origXml]).size;
+
+          const junkSelectors = 'metadata, script, comment, desc';
+          activeSvg.querySelectorAll(junkSelectors).forEach(el => el.remove());
+
+          const allElements = [activeSvg, ...activeSvg.querySelectorAll('*')];
+          allElements.forEach(el => {
+            const attrsToRemove = [];
+            for (let i = 0; i < el.attributes.length; i++) {
+              const a = el.attributes[i];
+              if (/^(inkscape|sodipodi|adobe|illustrator|sketch|data-name)/i.test(a.name) ||
+                  /xmlns:(inkscape|sodipodi)/i.test(a.name)) {
+                attrsToRemove.push(a.name);
+              }
+            }
+            attrsToRemove.forEach(attr => el.removeAttribute(attr));
+
+            if (el.tagName.toLowerCase() === 'path' && el.hasAttribute('d')) {
+              const d = el.getAttribute('d');
+              const cleanD = d.replace(/(-?\d+\.\d{3,})/g, m => parseFloat(m).toFixed(2));
+              el.setAttribute('d', cleanD);
+            }
+          });
+
+          if (!activeSvg.hasAttribute('viewBox')) {
+            const w = parseFloat(activeSvg.getAttribute('width')) || 260;
+            const h = parseFloat(activeSvg.getAttribute('height')) || 230;
+            activeSvg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+          }
+
+          activeSvg.querySelectorAll('defs').forEach(d => {
+            if (!d.hasChildNodes()) d.remove();
+          });
+
+          const newXml = new XMLSerializer().serializeToString(activeSvg);
+          const newSize = new Blob([newXml]).size;
+          const reduction = Math.max(0, Math.round(((origSize - newSize) / origSize) * 100));
+
+          if (optimizeBadge) {
+            optimizeBadge.textContent = `-${reduction}% peso`;
+            optimizeBadge.style.display = 'inline-block';
+          }
+          parseAndPopulateLayers();
+          applyCurrentAnimation();
+        });
+      }
+
+      // 4. Line Drawing / Stroke Draw Engine
+      function calculateMaxStrokeLength(rootElement) {
+        if (!rootElement) return 1200;
+        const targets = (rootElement.matches && rootElement.matches('path, polygon, rect, circle, polyline, line'))
+          ? [rootElement]
+          : rootElement.querySelectorAll('path, polygon, rect, circle, polyline, line');
+
+        let maxLen = 0;
+        targets.forEach(el => {
+          let len = 0;
+          if (typeof el.getTotalLength === 'function') {
+            try { len = el.getTotalLength(); } catch(err) {}
+          }
+          if (!len || len <= 0) {
+            const b = el.getBBox ? el.getBBox() : { width: 140, height: 140 };
+            len = 2 * (b.width + b.height);
+          }
+          if (len > maxLen) maxLen = len;
+
+          const currentStroke = window.getComputedStyle(el).stroke;
+          if (!currentStroke || currentStroke === 'none' || currentStroke === 'rgba(0, 0, 0, 0)') {
+            const fill = window.getComputedStyle(el).fill;
+            el.style.stroke = (fill && fill !== 'none') ? fill : '#38bdf8';
+            el.style.strokeWidth = '1.75px';
+          }
+        });
+
+        return Math.ceil(maxLen || 800);
+      }
+
+      function syncStrokeDrawKeyframe(len) {
+        const strokeLen = len || 1200;
+        let styleTag = document.getElementById('dynamicStrokeStyle');
+        if (!styleTag) {
+          styleTag = document.createElement('style');
+          styleTag.id = 'dynamicStrokeStyle';
+          document.head.appendChild(styleTag);
+        }
+        styleTag.textContent = `
+          @keyframes kf_strokeDraw {
+            0% { stroke-dasharray: ${strokeLen}; stroke-dashoffset: ${strokeLen}; fill-opacity: 0; }
+            60% { stroke-dashoffset: 0; fill-opacity: 0; }
+            85%, 100% { stroke-dashoffset: 0; fill-opacity: 1; }
+          }
+        `;
+        animations.strokeDraw.keyframe = `@keyframes svgMotion {
+          0% { stroke-dasharray: ${strokeLen}; stroke-dashoffset: ${strokeLen}; fill-opacity: 0; }
+          60% { stroke-dashoffset: 0; fill-opacity: 0; }
+          85%, 100% { stroke-dashoffset: 0; fill-opacity: 1; }
+        }`;
+      }
+
+      function flashHighlightLayer(el) {
+        if (!el) return;
+        el.classList.remove('layer-highlight');
+        void el.offsetWidth;
+        el.classList.add('layer-highlight');
+        setTimeout(() => el.classList.remove('layer-highlight'), 900);
+      }
+
+      function getCssIterationForTrigger() {
+        if (currentTrigger === 'once' || currentTrigger === 'scroll') return '1 normal forwards';
+        return 'infinite';
+      }
+
+      function updateStageHint() {
+        if (!stageHint) return;
+        if (currentTargetLayer === '__stagger__') {
+          stageHint.textContent = `🌊 Cascada Stagger activo (${currentStaggerDelay}ms)`;
+          return;
+        }
+        switch (currentTrigger) {
+          case 'hover': stageHint.textContent = '👆 Pasa el ratón para animar (:hover)'; break;
+          case 'once': stageHint.textContent = '▶️ Entrada única (clic para reiniciar)'; break;
+          case 'scroll': stageHint.textContent = '📜 Scroll Reveal activo (clic para probar)'; break;
+          default: stageHint.textContent = '🔄 Reproduciendo en bucle'; break;
+        }
+      }
+
+      // Aplicar animación activa
+      function applyCurrentAnimation() {
+        const activeSvg = document.getElementById('activeSvg');
+        if (!activeSvg || !wrapper) return;
+
+        wrapper.style.animation = 'none';
+        wrapper.classList.remove('trigger-mode-hover');
+
+        const animatedEls = activeSvg.querySelectorAll('.animated-target, [style*="animation"]');
+        animatedEls.forEach(el => {
+          el.classList.remove('animated-target');
+          el.style.animation = '';
+          el.style.animationDelay = '';
+          el.style.transformBox = '';
+          el.style.transformOrigin = '';
+          el.style.strokeDasharray = '';
+          el.style.strokeDashoffset = '';
+        });
+
+        const isHover = currentTrigger === 'hover';
+        const isOnce = currentTrigger === 'once' || currentTrigger === 'scroll';
+        const animIteration = getCssIterationForTrigger();
+        const isStroke = currentAnimKey === 'strokeDraw';
+
+        if (btnReplayAnim) {
+          btnReplayAnim.style.display = isOnce ? 'inline-block' : 'none';
+        }
+        void wrapper.offsetWidth;
+
+        if (currentTargetLayer === '__stagger__') {
+          const targets = activeSvg.querySelectorAll('path, polygon, rect, circle, polyline, line, text');
+          const isStaggerStroke = isStroke;
+          if (isStaggerStroke) {
+            const maxLen = calculateMaxStrokeLength(activeSvg);
+            syncStrokeDrawKeyframe(maxLen);
+          }
+
+          targets.forEach((el, idx) => {
+            el.classList.add('animated-target');
+            el.style.transformBox = 'fill-box';
+            el.style.transformOrigin = 'center center';
+            const delay = (idx * currentStaggerDelay) + 'ms';
+            el.style.animationDelay = delay;
+
+            if (isStaggerStroke) {
+              el.style.animation = `kf_strokeDraw ${currentDuration}s ${currentEasing} ${animIteration}`;
+            } else {
+              el.style.animation = `kf_${currentAnimKey} ${currentDuration}s ${currentEasing} ${animIteration}`;
+            }
+          });
+        } else if (currentTargetLayer === '__all__') {
+          if (isStroke) {
+            const maxLen = calculateMaxStrokeLength(activeSvg);
+            syncStrokeDrawKeyframe(maxLen);
+            const targets = activeSvg.querySelectorAll('path, polygon, rect, circle, polyline, line');
+            targets.forEach(t => {
+              t.classList.add('animated-target');
+              t.style.animation = `kf_strokeDraw ${currentDuration}s ${currentEasing} ${animIteration}`;
+            });
+          } else {
+            wrapper.style.animation = `kf_${currentAnimKey} ${currentDuration}s ${currentEasing} ${animIteration}`;
+          }
+        } else {
+          const targetEl = activeSvg.querySelector(`#${currentTargetLayer}`);
+          if (targetEl) {
+            targetEl.classList.add('animated-target');
+            targetEl.style.transformBox = 'fill-box';
+            targetEl.style.transformOrigin = 'center center';
+
+            if (isStroke) {
+              const maxLen = calculateMaxStrokeLength(targetEl);
+              syncStrokeDrawKeyframe(maxLen);
+              const targets = (targetEl.matches && targetEl.matches('path, polygon, rect, circle, polyline, line'))
+                ? [targetEl]
+                : targetEl.querySelectorAll('path, polygon, rect, circle, polyline, line');
+              targets.forEach(t => {
+                t.classList.add('animated-target');
+                t.style.animation = `kf_strokeDraw ${currentDuration}s ${currentEasing} ${animIteration}`;
+              });
+            } else {
+              targetEl.style.animation = `kf_${currentAnimKey} ${currentDuration}s ${currentEasing} ${animIteration}`;
+            }
+          } else {
+            wrapper.style.animation = `kf_${currentAnimKey} ${currentDuration}s ${currentEasing} ${animIteration}`;
+          }
+        }
+
+        if (isHover) {
+          wrapper.classList.add('trigger-mode-hover');
+        }
+
+        updateStageHint();
+        updateExportPreview();
+      }
+
+      function replayAnimation() {
+        applyCurrentAnimation();
+        const activeSvg = document.getElementById('activeSvg');
+        if (activeSvg) {
+          activeSvg.style.opacity = '0.5';
+          setTimeout(() => { if (activeSvg) activeSvg.style.opacity = '1'; }, 80);
+        }
+      }
+
+      // 5. Persistencia & Backup JSON con protección try-catch
+      function loadCustomAnimations() {
+        try {
+          if (typeof localStorage === 'undefined') return;
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return;
+          const list = JSON.parse(raw);
+          if (Array.isArray(list)) {
+            list.forEach(item => {
+              if (item && item.id && item.name && item.keyframe) {
+                registerCustomAnimation(item.id, item.name, item.keyframe, false);
+              }
+            });
+          }
+        } catch (err) {
+          console.warn('Almacenamiento local restringido o inaccesible:', err);
+        }
+      }
+
+      function saveCustomAnimations() {
+        try {
+          if (typeof localStorage === 'undefined') return;
+          const list = [];
+          for (const [k, v] of Object.entries(animations)) {
+            if (k.startsWith('custom_')) {
+              list.push({ id: k, name: v.name, keyframe: v.keyframe });
+            }
+          }
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+        } catch (err) {
+          console.warn('Error guardando en localStorage:', err);
+        }
+      }
+
+      function registerCustomAnimation(key, name, keyframe, andSelect = true) {
+        const styleTag = document.getElementById('dynamicStyles');
+        if (!styleTag) return;
+        const cleanKeyframeBody = keyframe.replace(/@keyframes[^{]*{/, '').replace(/}\s*$/, '');
+        styleTag.textContent += `\n@keyframes kf_${key} { ${cleanKeyframeBody} }`;
+
+        animations[key] = {
+          name: name,
+          keyframe: `@keyframes svgMotion { ${cleanKeyframeBody} }`
+        };
+
+        const container = document.getElementById('customPresetContainer');
+        if (container) container.style.display = 'block';
+        const grid = document.getElementById('customPresetGrid');
+        if (!grid) return;
+
+        const wrap = document.createElement('div');
+        wrap.className = 'custom-pill';
+
+        const btn = document.createElement('button');
+        btn.className = 'preset-btn';
+        btn.dataset.anim = key;
+        btn.textContent = '✨ ' + name;
+        btn.style.flex = '1';
+
+        const delBtn = document.createElement('button');
+        delBtn.className = 'custom-pill-del';
+        delBtn.title = 'Eliminar';
+        delBtn.textContent = '✖';
+        delBtn.addEventListener('click', (ev) => {
+          ev.stopPropagation();
+          delete animations[key];
+          wrap.remove();
+          saveCustomAnimations();
+          if (grid.children.length === 0 && container) container.style.display = 'none';
+          if (currentAnimKey === key) {
+            const firstBtn = document.querySelector('.preset-btn[data-anim="breathe"]');
+            if (firstBtn) firstBtn.click();
+          }
+        });
+
+        wrap.appendChild(btn);
+        wrap.appendChild(delBtn);
+        grid.appendChild(wrap);
+
+        if (andSelect) {
+          btn.click();
+          saveCustomAnimations();
+        }
+      }
+
+      // Backup JSON Export / Import
+      const btnExportJson = document.getElementById('btnExportJsonPresets');
+      if (btnExportJson) {
+        btnExportJson.addEventListener('click', (e) => {
+          e.preventDefault();
+          const customList = [];
+          for (const [k, v] of Object.entries(animations)) {
+            if (k.startsWith('custom_')) {
+              customList.push({ id: k, name: v.name, keyframe: v.keyframe });
+            }
+          }
+          if (customList.length === 0) {
+            alert('No tienes animaciones personalizadas guardadas para exportar.');
+            return;
+          }
+          const blob = new Blob([JSON.stringify(customList, null, 2)], { type: 'application/json' });
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = `svg-motion-presets-backup.json`;
+          a.click();
+        });
+      }
+
+      const btnImportJson = document.getElementById('btnImportJsonPresets');
+      const importJsonInput = document.getElementById('importJsonInput');
+      if (btnImportJson && importJsonInput) {
+        btnImportJson.addEventListener('click', (e) => {
+          e.preventDefault();
+          importJsonInput.click();
+        });
+
+        importJsonInput.addEventListener('change', (e) => {
+          const file = e.target.files && e.target.files[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            try {
+              const list = JSON.parse(event.target.result);
+              if (Array.isArray(list)) {
+                let count = 0;
+                list.forEach(item => {
+                  if (item.name && item.keyframe) {
+                    const key = item.id || ('custom_' + Date.now() + Math.random().toString(36).slice(2, 6));
+                    registerCustomAnimation(key, item.name, item.keyframe, false);
+                    count++;
+                  }
+                });
+                saveCustomAnimations();
+                alert(`✓ ¡Se importaron con éxito ${count} animaciones!`);
+              } else {
+                alert('El archivo JSON no contiene un array válido de animaciones.');
+              }
+            } catch (err) {
+              alert('Error procesando el archivo JSON.');
+            }
+          };
+          reader.readAsText(file);
+        });
+      }
+
+      // 6. Generadores de Reglas CSS y Tokens
+      function generateTargetCssRule(selector, duration, easing, trigger) {
+        if (currentTargetLayer === '__stagger__') {
+          const baseRule = `
+    .stagger-target {
+      transform-box: fill-box;
+      transform-origin: center center;
+      animation: svgMotion ${duration}s ${easing} ${getCssIterationForTrigger()};
+      animation-delay: calc(var(--stagger-idx, 0) * ${currentStaggerDelay}ms);
+    }`;
+          if (trigger === 'hover') {
+            return `
+    .stagger-target {
+      transform-box: fill-box;
+      transform-origin: center center;
+      animation-delay: calc(var(--stagger-idx, 0) * ${currentStaggerDelay}ms);
+      transition: transform 0.25s ease;
+    }
+    svg:hover .stagger-target, .stagger-target:hover {
+      animation: svgMotion ${duration}s ${easing} infinite;
+    }`;
+          }
+          if (trigger === 'scroll') {
+            return `
+    .stagger-target {
+      transform-box: fill-box;
+      transform-origin: center center;
+      opacity: 0;
+      animation-delay: calc(var(--stagger-idx, 0) * ${currentStaggerDelay}ms);
+    }
+    .is-visible .stagger-target, svg.is-visible .stagger-target {
+      opacity: 1;
+      animation: svgMotion ${duration}s ${easing} 1 normal forwards;
+    }`;
+          }
+          return baseRule;
+        }
+
+        if (trigger === 'hover') {
+          return `
+    ${selector} {
+      transform-box: fill-box;
+      transform-origin: center center;
+      transition: transform 0.25s ease;
+    }
+    svg:hover ${selector}, ${selector}:hover {
+      animation: svgMotion ${duration}s ${easing} infinite;
+    }`;
+        } else if (trigger === 'once') {
+          return `
+    ${selector} {
+      transform-box: fill-box;
+      transform-origin: center center;
+      animation: svgMotion ${duration}s ${easing} 1 normal forwards;
+    }`;
+        } else if (trigger === 'scroll') {
+          return `
+    ${selector} {
+      transform-box: fill-box;
+      transform-origin: center center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .is-visible ${selector}, svg.is-visible ${selector} {
+      opacity: 1;
+      animation: svgMotion ${duration}s ${easing} 1 normal forwards;
+    }`;
+        } else {
+          return `
+    ${selector} {
+      transform-box: fill-box;
+      transform-origin: center center;
+      animation: svgMotion ${duration}s ${easing} infinite;
+    }`;
+        }
+      }
+
+      function injectColorTokens(svgClone) {
+        if (!chkCssColorVariables || !chkCssColorVariables.checked || detectedColors.length === 0) return '';
+        let varsBlock = ':root {\n';
+        detectedColors.forEach((hex, i) => {
+          varsBlock += `    --color-token-${i + 1}: ${hex};\n`;
+        });
+        varsBlock += '  }\n';
+
+        detectedColors.forEach((hex, i) => {
+          const normHex = hex.toLowerCase();
+          svgClone.querySelectorAll('*').forEach(el => {
+            if (el.getAttribute('fill') && normalizeColor(el.getAttribute('fill')) === normHex) {
+              el.setAttribute('fill', `var(--color-token-${i + 1}, ${hex})`);
+            }
+            if (el.getAttribute('stroke') && normalizeColor(el.getAttribute('stroke')) === normHex) {
+              el.setAttribute('stroke', `var(--color-token-${i + 1}, ${hex})`);
+            }
+          });
+        });
+        return varsBlock;
+      }
+
+      // 7. Suite de Exportación Multiformato (8 Formatos)
+      function buildStandaloneSvg() {
+        const curSvg = document.getElementById('activeSvg');
+        if (!curSvg) return null;
+        const clone = curSvg.cloneNode(true);
+
+        clone.querySelectorAll('[style]').forEach(el => {
+          el.style.animation = '';
+          el.style.animationDelay = '';
+          el.style.transformBox = '';
+          el.style.transformOrigin = '';
+          el.style.strokeDasharray = '';
+          el.style.strokeDashoffset = '';
+        });
+        clone.style.animation = '';
+
+        const animDef = animations[currentAnimKey] || animations.breathe;
+        const styleBlock = document.createElementNS('http://www.w3.org/2000/svg', 'style');
+        const isStroke = currentAnimKey === 'strokeDraw';
+        const cssVars = injectColorTokens(clone);
+
+        let keyframesCss = animDef.keyframe;
+        if (isStroke) {
+          const maxLen = calculateMaxStrokeLength(curSvg);
+          keyframesCss = `
+    @keyframes svgMotion {
+      0% { stroke-dasharray: ${maxLen}; stroke-dashoffset: ${maxLen}; fill-opacity: 0; }
+      60% { stroke-dashoffset: 0; fill-opacity: 0; }
+      85%, 100% { stroke-dashoffset: 0; fill-opacity: 1; }
+    }`;
+        }
+
+        if (currentTargetLayer === '__stagger__') {
+          const ruleCss = generateTargetCssRule('.stagger-target', currentDuration, currentEasing, currentTrigger);
+          styleBlock.textContent = `
+    ${cssVars}
+    ${keyframesCss}
+    ${ruleCss}
+  `;
+          clone.querySelectorAll('path, polygon, rect, circle, polyline, line, text').forEach((el, idx) => {
+            el.classList.add('stagger-target');
+            el.style.setProperty('--stagger-idx', idx);
+          });
+          clone.appendChild(styleBlock);
+        } else if (currentTargetLayer === '__all__') {
+          const ruleCss = generateTargetCssRule('.animated-target', currentDuration, currentEasing, currentTrigger);
+          styleBlock.textContent = `
+    ${cssVars}
+    ${keyframesCss}
+    ${ruleCss}
+    ${isStroke ? '.animated-target [fill]:not([stroke]) { stroke: currentColor; stroke-width: 1.5px; }' : ''}
+  `;
+          const innerGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+          innerGroup.setAttribute('class', 'animated-target');
+          while (clone.firstChild) {
+            innerGroup.appendChild(clone.firstChild);
+          }
+          clone.appendChild(styleBlock);
+          clone.appendChild(innerGroup);
+        } else {
+          const targetInClone = clone.querySelector(`#${currentTargetLayer}`);
+          if (targetInClone) targetInClone.classList.add('animated-target');
+          const ruleCss = generateTargetCssRule(`#${currentTargetLayer}`, currentDuration, currentEasing, currentTrigger);
+          styleBlock.textContent = `
+    ${cssVars}
+    ${keyframesCss}
+    ${ruleCss}
+  `;
+          clone.appendChild(styleBlock);
+        }
+
+        return new XMLSerializer().serializeToString(clone);
+      }
+
+      function buildSpriteSymbol() {
+        const curSvg = document.getElementById('activeSvg');
+        if (!curSvg) return '';
+
+        const clone = curSvg.cloneNode(true);
+        clone.querySelectorAll('[style]').forEach(el => {
+          el.style.animation = '';
+          el.style.animationDelay = '';
+          el.style.transformBox = '';
+          el.style.transformOrigin = '';
+          el.style.strokeDasharray = '';
+          el.style.strokeDashoffset = '';
+        });
+        clone.style.animation = '';
+
+        const viewBox = curSvg.getAttribute('viewBox') || '0 0 260 230';
+        const width = curSvg.getAttribute('width') || '260';
+        const height = curSvg.getAttribute('height') || '230';
+        const animDef = animations[currentAnimKey] || animations.breathe;
+        const isStroke = currentAnimKey === 'strokeDraw';
+        const cssVars = injectColorTokens(clone);
+
+        let keyframesCss = animDef.keyframe;
+        if (isStroke) {
+          const maxLen = calculateMaxStrokeLength(curSvg);
+          keyframesCss = `
+    @keyframes svgMotion {
+      0% { stroke-dasharray: ${maxLen}; stroke-dashoffset: ${maxLen}; fill-opacity: 0; }
+      60% { stroke-dashoffset: 0; fill-opacity: 0; }
+      85%, 100% { stroke-dashoffset: 0; fill-opacity: 1; }
+    }`;
+        }
+
+        const targetSelector = currentTargetLayer === '__stagger__' ? '.stagger-target' : (currentTargetLayer === '__all__' ? '.animated-target' : `#${currentTargetLayer}`);
+        const ruleCss = generateTargetCssRule(targetSelector, currentDuration, currentEasing, currentTrigger);
+
+        let innerContent = '';
+        if (currentTargetLayer === '__stagger__') {
+          clone.querySelectorAll('path, polygon, rect, circle, polyline, line, text').forEach((el, idx) => {
+            el.classList.add('stagger-target');
+            el.style.setProperty('--stagger-idx', idx);
+          });
+          innerContent = clone.innerHTML.trim();
+        } else if (currentTargetLayer === '__all__') {
+          innerContent = `<g class="animated-target">\n      ${clone.innerHTML.trim()}\n    </g>`;
+        } else {
+          const targetInClone = clone.querySelector(`#${currentTargetLayer}`);
+          if (targetInClone) targetInClone.classList.add('animated-target');
+          innerContent = clone.innerHTML.trim();
+        }
+
+        const triggerText = triggerSelect ? triggerSelect.options[triggerSelect.selectedIndex].text : 'Loop';
+
+        return `<!-- ========================================================
+   SVG Motion Studio Pro v4.0 - Sprite Symbol & Invocación
+   Disparador: ${triggerText}
+   ======================================================== -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="icono-animado" viewBox="${viewBox}">
+    <style>
+${cssVars}
+${keyframesCss}
+${ruleCss}
+${isStroke && currentTargetLayer === '__all__' ? '    .animated-target [fill]:not([stroke]) { stroke: currentColor; stroke-width: 1.5px; }' : ''}
+    </style>
+    ${innerContent}
+  </symbol>
+</svg>
+
+<!-- Ejemplo de Uso / Invocación: -->
+<svg width="${width}" height="${height}" aria-hidden="true" class="svg-icon${currentTrigger === 'scroll' ? ' is-visible' : ''}">
+  <use href="#icono-animado"/>
+</svg>`;
+      }
+
+      function buildReactJsx() {
+        const svgCode = buildStandaloneSvg();
+        if (!svgCode) return '';
+
+        const attrMap = {
+          'class=': 'className=',
+          'xmlns:xlink=': 'xmlnsXlink=',
+          'xlink:href=': 'xlinkHref=',
+          'stroke-width=': 'strokeWidth=',
+          'stroke-linecap=': 'strokeLinecap=',
+          'stroke-linejoin=': 'strokeLinejoin=',
+          'stroke-miterlimit=': 'strokeMiterlimit=',
+          'stroke-dasharray=': 'strokeDasharray=',
+          'stroke-dashoffset=': 'strokeDashoffset=',
+          'stroke-opacity=': 'strokeOpacity=',
+          'fill-rule=': 'fillRule=',
+          'fill-opacity=': 'fillOpacity=',
+          'clip-rule=': 'clipRule=',
+          'clip-path=': 'clipPath=',
+          'stop-color=': 'stopColor=',
+          'stop-opacity=': 'stopOpacity=',
+          'font-family=': 'fontFamily=',
+          'font-size=': 'fontSize=',
+          'font-weight=': 'fontWeight=',
+          'text-anchor=': 'textAnchor='
+        };
+
+        let jsx = svgCode;
+        for (const [kebab, camel] of Object.entries(attrMap)) {
+          jsx = jsx.split(kebab).join(camel);
+        }
+
+        if (currentTrigger === 'scroll') {
+          return `import React, { useEffect, useRef, useState } from 'react';
+
+// SVG Motion Studio Pro v4.0 - Componente React (Scroll Reveal)
+export const AnimatedSvg = (props) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const svgRef = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setIsVisible(true);
+        observer.disconnect();
+      }
+    }, { threshold: 0.25 });
+
+    if (svgRef.current) observer.observe(svgRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    ${jsx.replace(/^<svg/i, '<svg ref={svgRef} className={`animated-svg ${isVisible ? "is-visible" : ""}`} {...props}')}
+  );
+};
+
+export default AnimatedSvg;
+`;
+        }
+
+        const triggerText = triggerSelect ? triggerSelect.options[triggerSelect.selectedIndex].text : 'Loop';
+        return `import React from 'react';
+
+// SVG Motion Studio Pro v4.0 - Componente React (${triggerText})
+export const AnimatedSvg = (props) => (
+  ${jsx.replace(/^<svg/i, '<svg {...props}')}
+);
+
+export default AnimatedSvg;
+`;
+      }
+
+      function buildVueSfc() {
+        const svgCode = buildStandaloneSvg();
+        if (!svgCode) return '';
+
+        return `<template>
+  ${svgCode.replace(/^<svg/i, '<svg :class="customClass" v-bind="$attrs"')}
+</template>
+
+<` + `script setup>
+// SVG Motion Studio Pro v4.0 - Vue 3 Component
+import { defineProps } from 'vue';
+
+defineProps({
+  customClass: {
+    type: String,
+    default: ''
+  }
+});
+<\\/script>
+
+<style scoped>
+/* Los estilos y @keyframes están encapsulados dentro del SVG para máxima autonomía */
+</style>
+`;
+      }
+
+      function buildSvelteComponent() {
+        const svgCode = buildStandaloneSvg();
+        if (!svgCode) return '';
+
+        return `<!-- SVG Motion Studio Pro v4.0 - Svelte 5 Component -->
+<` + `script>
+  let { class: className = '', ...props } = $props();
+<\\/script>
+
+${svgCode.replace(/^<svg/i, '<svg class={`animated-svg ${className}`} {...props}')}
+
+<style>
+  /* Animación CSS integrada autónoma */
+</style>
+`;
+      }
+
+      function buildWebComponent() {
+        const svgCode = buildStandaloneSvg();
+        if (!svgCode) return '';
+
+        return `// SVG Motion Studio Pro v4.0 - Web Component Nativo con Shadow DOM
+class AnimatedSvgIcon extends HTMLElement {
+  constructor() {
+    super();
+    this.attachShadow({ mode: 'open' });
+  }
+
+  connectedCallback() {
+    this.shadowRoot.innerHTML = \`
+      <style>
+        :host {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+        }
+      </style>
+      ${svgCode}
+    \`;
+  }
+}
+
+if (!customElements.get('animated-svg-icon')) {
+  customElements.define('animated-svg-icon', AnimatedSvgIcon);
+}
+
+// Ejemplo de uso en cualquier HTML puro o WordPress:
+// <animated-svg-icon></animated-svg-icon>
+`;
+      }
+
+      function buildAstroComponent() {
+        const svgCode = buildStandaloneSvg();
+        if (!svgCode) return '';
+
+        if (currentTrigger === 'scroll') {
+          return `---
+// SVG Motion Studio Pro v4.0 - Componente Astro (Scroll Reveal)
+interface Props {
+  class?: string;
+  [key: string]: any;
+}
+const { class: className = '', ...props } = Astro.props;
+---
+${svgCode.replace(/^<svg/i, '<svg class={`animated-svg-reveal ${className}`} {...props}')}
+
+<` + `script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.2 });
+  document.querySelectorAll('.animated-svg-reveal').forEach(el => observer.observe(el));
+<\/script>
+`;
+        }
+
+        return `---
+// SVG Motion Studio Pro v4.0 - Componente Astro
+interface Props {
+  class?: string;
+  [key: string]: any;
+}
+const { class: className = '', ...props } = Astro.props;
+---
+${svgCode.replace(/^<svg/i, '<svg class={className} {...props}')}
+`;
+      }
+
+      function buildCssSnippet() {
+        const animDef = animations[currentAnimKey] || animations.breathe;
+        const isStroke = currentAnimKey === 'strokeDraw';
+        const targetSelector = currentTargetLayer === '__stagger__' ? '.stagger-target' : (currentTargetLayer === '__all__' ? '.animated-target, .animated-svg' : `#${currentTargetLayer}`);
+
+        let keyframesCss = animDef.keyframe;
+        if (isStroke) {
+          const curSvg = document.getElementById('activeSvg');
+          const maxLen = calculateMaxStrokeLength(curSvg);
+          keyframesCss = `@keyframes svgMotion {
+  0% { stroke-dasharray: ${maxLen}; stroke-dashoffset: ${maxLen}; fill-opacity: 0; }
+  60% { stroke-dashoffset: 0; fill-opacity: 0; }
+  85%, 100% { stroke-dashoffset: 0; fill-opacity: 1; }
+}`;
+        }
+
+        const ruleCss = generateTargetCssRule(targetSelector, currentDuration, currentEasing, currentTrigger);
+        const triggerText = triggerSelect ? triggerSelect.options[triggerSelect.selectedIndex].text : 'Loop';
+
+        return `/* ========================================================
+   SVG Motion Studio Pro v4.0 - Hoja de Estilos CSS Puro
+   Animación: ${animDef.name}
+   Duración: ${currentDuration}s | Easing: ${currentEasing}
+   Disparador: ${triggerText}
+   Objetivo: ${currentTargetLayer === '__stagger__' ? 'Cascada Stagger' : (currentTargetLayer === '__all__' ? 'SVG Completo' : '#' + currentTargetLayer)}
+   ======================================================== */
+
+${keyframesCss}
+${ruleCss}
+`;
+      }
+
+      function getExportPayload() {
+        switch (currentExportFormat) {
+          case 'symbol':
+            return { code: buildSpriteSymbol(), filename: `icono-${currentAnimKey}-symbol.svg`, mime: 'image/svg+xml;charset=utf-8' };
+          case 'jsx':
+            return { code: buildReactJsx(), filename: `AnimatedSvg-${currentAnimKey}.jsx`, mime: 'text/javascript;charset=utf-8' };
+          case 'vue':
+            return { code: buildVueSfc(), filename: `AnimatedSvg-${currentAnimKey}.vue`, mime: 'text/plain;charset=utf-8' };
+          case 'svelte':
+            return { code: buildSvelteComponent(), filename: `AnimatedSvg-${currentAnimKey}.svelte`, mime: 'text/plain;charset=utf-8' };
+          case 'webcomponent':
+            return { code: buildWebComponent(), filename: `animated-svg-icon.js`, mime: 'text/javascript;charset=utf-8' };
+          case 'astro':
+            return { code: buildAstroComponent(), filename: `AnimatedSvg-${currentAnimKey}.astro`, mime: 'text/plain;charset=utf-8' };
+          case 'css':
+            return { code: buildCssSnippet(), filename: `svg-motion-${currentAnimKey}.css`, mime: 'text/css;charset=utf-8' };
+          case 'svg':
+          default:
+            return { code: buildStandaloneSvg(), filename: `animacion-${currentAnimKey}.svg`, mime: 'image/svg+xml;charset=utf-8' };
+        }
+      }
+
+      function updateExportPreview() {
+        const payload = getExportPayload();
+        if (exportCodePreview) {
+          exportCodePreview.textContent = payload.code || '';
+        }
+      }
+
+      // Helper universal de copiado con fallback seguro para Firefox y HTTP local
+      function copyToClipboard(text, onSuccess, onError) {
+        if (!text) return;
+        if (navigator.clipboard && window.isSecureContext) {
+          navigator.clipboard.writeText(text)
+            .then(() => {
+              if (onSuccess) onSuccess();
+            })
+            .catch(() => {
+              fallbackCopy(text, onSuccess, onError);
+            });
+        } else {
+          fallbackCopy(text, onSuccess, onError);
+        }
+      }
+
+      function fallbackCopy(text, onSuccess, onError) {
+        try {
+          const ta = document.createElement('textarea');
+          ta.value = text;
+          ta.style.position = 'fixed';
+          ta.style.left = '-9999px';
+          ta.style.top = '-9999px';
+          ta.setAttribute('readonly', '');
+          document.body.appendChild(ta);
+          ta.focus();
+          ta.select();
+          const ok = document.execCommand('copy');
+          document.body.removeChild(ta);
+          if (ok) {
+            if (onSuccess) onSuccess();
+          } else {
+            if (onError) onError();
+          }
+        } catch (err) {
+          if (onError) onError(err);
+        }
+      }
+
+      // Event Listeners Universales
+
+      // Delegación de eventos de clic en el documento (inmune a tiempos de carga y Gecko)
+      document.addEventListener('click', (e) => {
+        // Presets de animación
+        const presetBtn = e.target.closest('.preset-btn');
+        if (presetBtn && presetBtn.dataset.anim) {
+          document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+          presetBtn.classList.add('active');
+          currentAnimKey = presetBtn.dataset.anim;
+          applyCurrentAnimation();
+          return;
+        }
+
+        // Pestañas de exportación
+        const exportTab = e.target.closest('.export-tab');
+        if (exportTab && exportTab.dataset.fmt) {
+          document.querySelectorAll('.export-tab').forEach(t => t.classList.remove('active'));
+          exportTab.classList.add('active');
+          currentExportFormat = exportTab.dataset.fmt;
+          updateExportPreview();
+          return;
+        }
+
+        // Muestras de color del lienzo
+        const colorDot = e.target.closest('.color-dot');
+        if (colorDot && colorDot.dataset.bg && stage) {
+          document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
+          colorDot.classList.add('active');
+          stage.style.backgroundColor = colorDot.dataset.bg;
+          return;
+        }
+      });
+
+      // Selector de Capa Objetivo / Stagger
+      if (layerSelect) {
+        layerSelect.addEventListener('change', (e) => {
+          currentTargetLayer = e.target.value;
+          if (currentTargetLayer === '__stagger__') {
+            if (staggerControlGroup) staggerControlGroup.style.display = 'flex';
+          } else {
+            if (staggerControlGroup) staggerControlGroup.style.display = 'none';
+            if (currentTargetLayer !== '__all__') {
+              const activeSvg = document.getElementById('activeSvg');
+              const targetEl = activeSvg ? activeSvg.querySelector(`#${currentTargetLayer}`) : null;
+              if (targetEl) flashHighlightLayer(targetEl);
+            }
+          }
+          applyCurrentAnimation();
+        });
+      }
+
+      // Slider Stagger Delay
+      if (staggerSlider) {
+        staggerSlider.addEventListener('input', (e) => {
+          currentStaggerDelay = parseInt(e.target.value, 10);
+          if (staggerDelayVal) staggerDelayVal.textContent = currentStaggerDelay + 'ms';
+          applyCurrentAnimation();
+        });
+      }
+
+      // Selector de Disparador / Trigger
+      if (triggerSelect) {
+        triggerSelect.addEventListener('change', (e) => {
+          currentTrigger = e.target.value;
+          applyCurrentAnimation();
+        });
+      }
+
+      if (btnReplayAnim) {
+        btnReplayAnim.addEventListener('click', (e) => {
+          e.stopPropagation();
+          replayAnimation();
+        });
+      }
+
+      if (stage) {
+        stage.addEventListener('click', (e) => {
+          if (currentTrigger === 'once' || currentTrigger === 'scroll') {
+            replayAnimation();
+          }
+        });
+      }
+
+      if (easingSelect) {
+        easingSelect.addEventListener('change', (e) => {
+          currentEasing = e.target.value;
+          applyCurrentAnimation();
+        });
+      }
+
+      if (speedSlider) {
+        speedSlider.addEventListener('input', (e) => {
+          currentDuration = parseFloat(e.target.value);
+          if (speedVal) speedVal.textContent = currentDuration.toFixed(1) + 's';
+          applyCurrentAnimation();
+        });
+      }
+
+      if (chkCssColorVariables) {
+        chkCssColorVariables.addEventListener('change', () => {
+          updateExportPreview();
+        });
+      }
+
+      // Descarga de archivo
+      const btnDownload = document.getElementById('btnDownloadCurrent');
+      if (btnDownload) {
+        btnDownload.addEventListener('click', (e) => {
+          e.preventDefault();
+          const payload = getExportPayload();
+          if (!payload.code) return;
+          const blob = new Blob([payload.code], { type: payload.mime });
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = payload.filename;
+          a.click();
+        });
+      }
+
+      // Copiar código con fallback blindado
+      const btnCopy = document.getElementById('btnCopyCurrent');
+      if (btnCopy) {
+        btnCopy.addEventListener('click', (e) => {
+          e.preventDefault();
+          const payload = getExportPayload();
+          if (!payload.code) return;
+          copyToClipboard(payload.code, () => {
+            const old = btnCopy.textContent;
+            btnCopy.textContent = '✓ ¡Copiado!';
+            setTimeout(() => { btnCopy.textContent = old; }, 1800);
+          }, () => {
+            alert('Por favor selecciona y copia manualmente el código desde la vista previa.');
+          });
+        });
+      }
+
+      // Carga de SVG (File / Drag & Drop)
+      const dropZone = document.getElementById('dropZone');
+      const fileInput = document.getElementById('fileInput');
+
+      if (dropZone && fileInput) {
+        dropZone.addEventListener('click', () => fileInput.click());
+        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.style.borderColor = 'var(--accent)'; });
+        dropZone.addEventListener('dragleave', () => { dropZone.style.borderColor = 'rgba(255,255,255,0.15)'; });
+        dropZone.addEventListener('drop', (e) => {
+          e.preventDefault();
+          dropZone.style.borderColor = 'rgba(255,255,255,0.15)';
+          if (e.dataTransfer && e.dataTransfer.files.length > 0) loadFile(e.dataTransfer.files[0]);
+        });
+        fileInput.addEventListener('change', (e) => {
+          if (e.target.files && e.target.files.length > 0) loadFile(e.target.files[0]);
+        });
+      }
+
+      function loadFile(file) {
+        const reader = new FileReader();
+        reader.onload = (e) => setSvg(e.target.result);
+        reader.readAsText(file);
+      }
+
+      function setSvg(svgText) {
+        const doc = new DOMParser().parseFromString(svgText, 'image/svg+xml');
+        const elem = doc.querySelector('svg');
+        if (elem && wrapper) {
+          wrapper.innerHTML = '';
+          elem.id = 'activeSvg';
+          wrapper.appendChild(elem);
+          if (optimizeBadge) optimizeBadge.style.display = 'none';
+          parseAndPopulateLayers();
+          applyCurrentAnimation();
+        } else {
+          alert('El archivo no contiene un <svg> válido');
+        }
+      }
+
+      const btnApplyCode = document.getElementById('btnApplyCode');
+      const svgRawInput = document.getElementById('svgRawInput');
+      if (btnApplyCode && svgRawInput) {
+        btnApplyCode.addEventListener('click', (e) => {
+          e.preventDefault();
+          const code = svgRawInput.value.trim();
+          if (code) setSvg(code);
+        });
+      }
+
+      // Muestra geométrica: Isotipo Isométrico Tech (Hex Core)
+      const btnSampleHex = document.getElementById('btnSampleHexCore');
+      if (btnSampleHex) {
+        btnSampleHex.addEventListener('click', (e) => {
+          e.preventDefault();
+          setSvg(`<svg id="activeSvg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 230" width="260" height="230">
+            <g id="cube-group">
+              <polygon id="facet-top" points="130,35 199,75 130,115 61,75" fill="#38bdf8"/>
+              <polygon id="facet-left" points="61,75 130,115 130,195 61,155" fill="#6366f1"/>
+              <polygon id="facet-right" points="130,115 199,75 199,155 130,195" fill="#4338ca"/>
+              <polygon id="facet-inner-glow" points="130,75 165,95 130,115 95,95" fill="#7dd3fc" opacity="0.6"/>
+              <polygon id="core-diamond" points="130,95 148,105 148,125 130,135 112,125 112,105" fill="#f59e0b"/>
+              <circle id="core-sphere" cx="130" cy="115" r="8" fill="#fbbf24"/>
+              <polygon id="accent-wing-top" points="130,15 142,28 118,28" fill="#38bdf8"/>
+              <polygon id="accent-wing-left" points="42,115 54,103 54,127" fill="#6366f1"/>
+              <polygon id="accent-wing-right" points="218,115 206,103 206,127" fill="#f59e0b"/>
+            </g>
+          </svg>`);
+        });
+      }
+
+      // Guardar animación personalizada
+      const btnSaveCustom = document.getElementById('btnSaveCustom');
+      const customName = document.getElementById('customName');
+      const customKeyframes = document.getElementById('customKeyframes');
+
+      if (btnSaveCustom && customName && customKeyframes) {
+        btnSaveCustom.addEventListener('click', (e) => {
+          e.preventDefault();
+          const name = customName.value.trim() || 'Mi Animación';
+          const kfText = customKeyframes.value.trim();
+          if (!kfText) return;
+
+          const key = 'custom_' + Date.now();
+          registerCustomAnimation(key, name, kfText, true);
+
+          customName.value = '';
+          customKeyframes.value = '';
+        });
+      }
+
+      // Arranque
+      parseAndPopulateLayers();
+      loadCustomAnimations();
+      applyCurrentAnimation();
+      updateExportPreview();
+    });
+  </script>
+</body>
+</html>

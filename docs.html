@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Documentación & Manual Técnico - SVG Motion Studio Pro v4.0</title>
+  <meta name="description" content="Manual de referencia completo, arquitectura, tutoriales paso a paso y recetas de integración para SVG Motion Studio Pro v4.0.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0f17;
+      --card-bg: rgba(20, 27, 41, 0.88);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --accent: #38bdf8;
+      --accent-glow: rgba(56, 189, 248, 0.3);
+      --gold: #d49b5b;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --code-bg: rgba(13, 19, 33, 0.95);
+      --radius: 12px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.08) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(212, 155, 91, 0.06) 0px, transparent 50%);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      line-height: 1.65;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      padding: 1rem 2.5rem;
+      border-bottom: 1px solid var(--card-border);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(11, 15, 23, 0.85);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-weight: 700;
+      font-size: 1.15rem;
+      text-decoration: none;
+      color: var(--text);
+    }
+
+    .badge-doc {
+      font-size: 0.68rem;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent);
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      font-weight: 700;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .btn-nav {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text);
+      text-decoration: none;
+      padding: 0.45rem 0.9rem;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+      background: rgba(255, 255, 255, 0.04);
+      transition: all 0.2s ease;
+    }
+    .btn-nav:hover {
+      border-color: var(--accent);
+      background: rgba(56, 189, 248, 0.1);
+      transform: translateY(-1px);
+    }
+    .btn-nav.primary {
+      background: linear-gradient(135deg, #0284c7, #38bdf8);
+      color: #0b0f17;
+      font-weight: 700;
+      border: none;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+      padding: 2.5rem 2rem;
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 3rem;
+      flex: 1;
+    }
+
+    @media (max-width: 1000px) {
+      .container { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+    }
+
+    /* Sidebar TOC */
+    .sidebar {
+      position: sticky;
+      top: 5.5rem;
+      height: fit-content;
+      max-height: calc(100vh - 7rem);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .toc-title {
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      margin-bottom: 0.4rem;
+    }
+
+    .toc-link {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 0.35rem 0.6rem;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+      display: block;
+    }
+    .toc-link:hover {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.04);
+      padding-left: 0.85rem;
+    }
+
+    /* Content Area */
+    .content {
+      display: flex;
+      flex-direction: column;
+      gap: 3rem;
+    }
+
+    section {
+      scroll-margin-top: 6rem;
+    }
+
+    h1 {
+      font-size: 2.4rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      background: linear-gradient(135deg, #fff 40%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 1rem;
+    }
+
+    h2 {
+      font-size: 1.55rem;
+      font-weight: 700;
+      color: var(--text);
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 0.6rem;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    h3 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin: 1.25rem 0 0.5rem 0;
+    }
+
+    p {
+      color: #cbd5e1;
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+    }
+
+    ul, ol {
+      margin-left: 1.5rem;
+      margin-bottom: 1.25rem;
+      color: #cbd5e1;
+      font-size: 0.95rem;
+    }
+    li { margin-bottom: 0.45rem; }
+
+    .card-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 1.4rem;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+      margin-bottom: 1.5rem;
+    }
+
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 1.1rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: #38bdf8;
+      overflow-x: auto;
+      margin: 0.75rem 0 1.25rem 0;
+      position: relative;
+    }
+
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82em;
+      background: rgba(56, 189, 248, 0.1);
+      color: var(--accent);
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+    }
+
+    pre code {
+      background: transparent;
+      color: inherit;
+      padding: 0;
+    }
+
+    .table-container {
+      overflow-x: auto;
+      margin: 1rem 0 1.5rem 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      text-align: left;
+    }
+
+    th {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 0.75rem 1rem;
+      color: var(--accent);
+      font-weight: 700;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--card-border);
+      color: #cbd5e1;
+    }
+
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .pill-tag {
+      font-size: 0.7rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      font-weight: 600;
+      background: rgba(212, 155, 91, 0.15);
+      color: var(--gold);
+      border: 1px solid rgba(212, 155, 91, 0.3);
+    }
+
+    footer {
+      border-top: 1px solid var(--card-border);
+      padding: 2rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      margin-top: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="index.html" class="brand">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+        <polyline points="2 17 12 22 22 17"></polyline>
+        <polyline points="2 12 12 17 22 12"></polyline>
+      </svg>
+      <span>SVG Motion Studio Pro</span>
+      <span class="badge-doc">v4.0 Docs</span>
+    </a>
+
+    <div class="header-actions">
+      <a href="index.html" class="btn-nav primary">
+        🎨 Abrir Studio
+      </a>
+      <a href="https://github.com/bofersilo/SVGmotion" target="_blank" rel="noopener noreferrer" class="btn-nav">
+        GitHub
+      </a>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- Tabla de Contenidos Lateral -->
+    <aside class="sidebar">
+      <div class="toc-title">Navegación del Manual</div>
+      <a href="#filosofia" class="toc-link">1. Filosofía & Arquitectura</a>
+      <a href="#inicio-rapido" class="toc-link">2. Inicio Rápido (30s)</a>
+      <a href="#triggers" class="toc-link">3. Disparadores & Modos</a>
+      <a href="#capas-stagger" class="toc-link">4. Capas & Cascada Stagger</a>
+      <a href="#stroke-draw" class="toc-link">5. Trazado (Stroke Draw)</a>
+      <a href="#paleta-colores" class="toc-link">6. Paleta & Variables CSS</a>
+      <a href="#optimizador" class="toc-link">7. Optimizador SVG</a>
+      <a href="#integracion" class="toc-link">8. Recetas por Framework</a>
+      <a href="#animaciones-custom" class="toc-link">9. Keyframes Avanzados</a>
+    </aside>
+
+    <!-- Área de Documentación -->
+    <main class="content">
+
+      <!-- Sección 1 -->
+      <section id="filosofia">
+        <h1>Manual Técnico & Guía de Referencia</h1>
+        <p>
+          <strong>SVG Motion Studio Pro v4.0</strong> es una suite especializada en la manipulación y animación declarativa de gráficos vectoriales SVG utilizando exclusivamente estándares web nativos (CSS3 y Vanilla JS).
+        </p>
+
+        <div class="card-box">
+          <h3>Arquitectura Cero Dependencias</h3>
+          <p>
+            A diferencia de bibliotecas pesadas como GSAP, Lottie o Anime.js que demandan dependencias de runtime adicionales y empaquetadores complejos, SVG Motion Studio Pro compila las animaciones en bloques <code>&lt;style&gt;</code> embebidos directamente en el árbol XML del SVG.
+          </p>
+          <ul>
+            <li><strong>Portabilidad Absoluta:</strong> El archivo <code>.svg</code> generado contiene sus propios <code>@keyframes</code> y se anima de forma completamente autónoma en cualquier visor web, navegador o etiqueta <code>&lt;img&gt;</code>.</li>
+            <li><strong>Transform-Box Fill-Box:</strong> Implementa la especificación SVG2 <code>transform-box: fill-box; transform-origin: center center;</code>, garantizando que rotaciones y escalas calculen su eje geométrico sobre el vector real sin deformaciones.</li>
+            <li><strong>Rendimiento por GPU:</strong> Los motores de renderizado aceleran por hardware las propiedades <code>transform</code> y <code>opacity</code>, eliminando cálculos pesados de layout y repaint en el hilo principal de JavaScript.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Sección 2 -->
+      <section id="inicio-rapido">
+        <h2>2. Inicio Rápido en 30 Segundos</h2>
+        <p>Aprende el flujo de trabajo esencial para animar cualquier ilustración o logotipo vectorial:</p>
+
+        <div class="card-box">
+          <ol>
+            <li><strong>Cargar el Vector:</strong> Arrastra tu archivo <code>.svg</code> a la zona de carga, selecciónalo mediante el explorador local o pega directamente el código XML <code>&lt;svg&gt;...&lt;/svg&gt;</code> en el panel izquierdo.</li>
+            <li><strong>Seleccionar Capa Objetivo:</strong> En el dropdown <em>Capa Objetivo</em>, elige si deseas animar el SVG global, aplicar una cascada multicapa (<em>Stagger</em>) o aislar una capa específica (<code>g</code>, <code>path</code>, <code>polygon</code>).</li>
+            <li><strong>Elegir Efecto & Curva:</strong> Selecciona uno de los 13 efectos nativos (respiración, latido, dibujo stroke, tada, etc.) y ajusta la velocidad y curva de aceleración (<em>Easing Engine</em>).</li>
+            <li><strong>Seleccionar Disparador:</strong> Elige entre bucle continuo (<em>Loop</em>), activación interactiva con el cursor (<em>Hover</em>), entrada fija (<em>Once</em>) o revelado al hacer scroll (<em>Scroll Reveal</em>).</li>
+            <li><strong>Exportar:</strong> Elige tu formato preferido (SVG Standalone, Sprite Symbol, React, Vue, Svelte, Web Component, Astro o CSS) y pulsa <em>Descargar Archivo</em> o <em>Copiar al Portapapeles</em>.</li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- Sección 3 -->
+      <section id="triggers">
+        <h2>3. Modos de Disparo (Animation Triggers)</h2>
+        <p>Controla cómo y cuándo se reproduce la coreografía de movimiento:</p>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Disparador</th>
+                <th>Regla CSS Generada</th>
+                <th>Caso de Uso Recomendado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>🔄 Loop (Infinito)</code></td>
+                <td><code>animation: ... infinite;</code></td>
+                <td>Spinners de carga, fondos sutiles, microanimaciones de marca.</td>
+              </tr>
+              <tr>
+                <td><code>👆 Hover (:hover)</code></td>
+                <td><code>svg:hover .target { animation: ... }</code></td>
+                <td>Iconos de interfaz, botones de acción (CTA), tarjetas interactivas.</td>
+              </tr>
+              <tr>
+                <td><code>▶️ Once (Entrada única)</code></td>
+                <td><code>animation: ... 1 normal forwards;</code></td>
+                <td>Animaciones de bienvenida en hero sections, alertas visuales.</td>
+              </tr>
+              <tr>
+                <td><code>📜 Scroll Reveal</code></td>
+                <td><code>.is-visible .target { animation: ... }</code></td>
+                <td>Ilustraciones en landing pages que se activan al llegar con scroll.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="card-box">
+          <h3>Implementación de Scroll Reveal con IntersectionObserver</h3>
+          <p>Al exportar en modo Scroll Reveal, se inyecta un script optimizado de solo 5 líneas que monitorea el elemento con rendimiento óptimo:</p>
+          <pre><code>const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('is-visible');
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.2 });
+
+document.querySelectorAll('.animated-svg-reveal').forEach(el => observer.observe(el));</code></pre>
+        </div>
+      </section>
+
+      <!-- Sección 4 -->
+      <section id="capas-stagger">
+        <h2>4. Capas & Secuenciación en Cascada (Stagger Engine)</h2>
+        <p>
+          El motor <strong>Stagger Engine</strong> permite orquestar composiciones complejas donde múltiples elementos se mueven de manera coordinada pero secuencial.
+        </p>
+
+        <div class="card-box">
+          <h3>¿Cómo funciona el cálculo de Stagger?</h3>
+          <p>
+            Al seleccionar <em>🌊 Cascada Multicapa (Stagger / Sequential)</em>, el estudio analiza el orden jerárquico del DOM y asigna a cada nodo un índice relativo. Se expone un control deslizante de desfase (de 20ms a 400ms).
+          </p>
+          <p>
+            En el código exportado, la sincronización se calcula dinámicamente mediante variables nativas CSS:
+          </p>
+          <pre><code>.stagger-target {
+  transform-box: fill-box;
+  transform-origin: center center;
+  animation: svgMotion 2.5s ease-in-out infinite;
+  animation-delay: calc(var(--stagger-idx, 0) * 80ms);
+}</code></pre>
+          <p>Esto permite modificar el tiempo global o el retardo sin tener que reescribir docenas de reglas estáticas en la hoja de estilos.</p>
+        </div>
+      </section>
+
+      <!-- Sección 5 -->
+      <section id="stroke-draw">
+        <h2>5. Trazado Progresivo de Líneas (Stroke Draw)</h2>
+        <p>
+          La animación <strong>✍️ Dibujo / Stroke Draw</strong> replica el efecto clásico de dibujo a mano alzada vector por vector.
+        </p>
+
+        <div class="card-box">
+          <h3>Cálculo de Perímetro con <code>getTotalLength()</code></h3>
+          <p>
+            El motor consulta en tiempo real la longitud geométrica exacta de los trazos del SVG. Si un elemento es un polígono o un path cerrado que originalmente carece de contorno (como ocurre comúnmente en isotipos vectoriales), el estudio le asigna automáticamente un <code>stroke</code> visible con su color de relleno para que el efecto sea apreciable de inmediato.
+          </p>
+          <pre><code>@keyframes svgMotion {
+  0% { stroke-dasharray: 1200; stroke-dashoffset: 1200; fill-opacity: 0; }
+  60% { stroke-dashoffset: 0; fill-opacity: 0; }
+  85%, 100% { stroke-dashoffset: 0; fill-opacity: 1; }
+}</code></pre>
+        </div>
+      </section>
+
+      <!-- Sección 6 -->
+      <section id="paleta-colores">
+        <h2>6. Paleta Reactiva & Variables CSS</h2>
+        <p>
+          El módulo <strong>Paleta de Colores del SVG</strong> escanea todos los atributos <code>fill</code>, <code>stroke</code> y estilos en línea de la ilustración activa.
+        </p>
+
+        <div class="card-box">
+          <h3>Tokenización de Color</h3>
+          <p>
+            Al marcar la opción <em>Convertir a Variables CSS</em>, el exportador extrae todos los colores hexadecimales y los reubica en un bloque <code>:root</code> dentro de la etiqueta <code>&lt;style&gt;</code> del SVG:
+          </p>
+          <pre><code>:root {
+  --color-token-1: #38bdf8;
+  --color-token-2: #6366f1;
+}
+
+polygon#facet-top { fill: var(--color-token-1, #38bdf8); }
+polygon#facet-left { fill: var(--color-token-2, #6366f1); }</code></pre>
+          <p>De este modo, puedes redefinir la paleta desde tu propia web o cambiar el tema oscuro/claro alterando únicamente las variables CSS superiores.</p>
+        </div>
+      </section>
+
+      <!-- Sección 7 -->
+      <section id="optimizador">
+        <h2>7. Limpiador & Optimizador SVG</h2>
+        <p>
+          Los archivos SVG generados por herramientas como Illustrator, Inkscape o Figma suelen acumular metadatos propietarios y decimales redundantes que aumentan el peso innecesariamente.
+        </p>
+
+        <div class="card-box">
+          <h3>Procesamiento en el Cliente (Sin Servidor)</h3>
+          <ul>
+            <li>Elimina etiquetas vacías <code>&lt;defs&gt;</code>, comentarios XML y bloques <code>&lt;metadata&gt;</code>.</li>
+            <li>Purga atributos de programas de edición como <code>inkscape:*</code>, <code>sodipodi:*</code> y <code>adobe:*</code>.</li>
+            <li>Redondea las coordenadas de paths en el atributo <code>d</code> a 2 decimales para aligerar la cadena sin alterar la fidelidad visual.</li>
+            <li>Normaliza el atributo <code>viewBox</code> para evitar recortes accidentales al escalar el lienzo.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Sección 8 -->
+      <section id="integracion">
+        <h2>8. Guía de Integración por Framework</h2>
+        <p>A continuación encontrarás ejemplos directos de cómo importar e implementar los activos exportados en tu stack tecnológico:</p>
+
+        <!-- React / Next.js -->
+        <div class="card-box">
+          <h3>React / Next.js (.jsx)</h3>
+          <pre><code>import React from 'react';
+import AnimatedLogo from './AnimatedLogo.jsx';
+
+export default function HeroSection() {
+  return (
+    &lt;header className="hero"&gt;
+      &lt;AnimatedLogo width={220} height={200} className="brand-icon" /&gt;
+      &lt;h1&gt;Bienvenido a mi aplicación&lt;/h1&gt;
+    &lt;/header&gt;
+  );
+}</code></pre>
+        </div>
+
+        <!-- Vue 3 -->
+        <div class="card-box">
+          <h3>Vue 3 SFC (.vue)</h3>
+          <pre><code>&lt;template&gt;
+  &lt;div class="icon-wrapper"&gt;
+    &lt;AnimatedSvg customClass="logo-pulse" width="180" height="180" /&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script setup&gt;
+import AnimatedSvg from './AnimatedSvg.vue';
+&lt;/script&gt;</code></pre>
+        </div>
+
+        <!-- Svelte 5 -->
+        <div class="card-box">
+          <h3>Svelte 5 (.svelte)</h3>
+          <pre><code>&lt;script&gt;
+  import AnimatedSvg from './AnimatedSvg.svelte';
+&lt;/script&gt;
+
+&lt;AnimatedSvg class="custom-icon" width={160} height={160} /&gt;</code></pre>
+        </div>
+
+        <!-- Web Component Nativo -->
+        <div class="card-box">
+          <h3>Web Component Nativo (HTML puro / WordPress)</h3>
+          <p>Compatible con cualquier CMS o sitio web sin necesidad de compilador:</p>
+          <pre><code>&lt;!-- 1. Cargar el script del componente --&gt;
+&lt;script src="./animated-svg-icon.js" defer&gt;&lt;/script&gt;
+
+&lt;!-- 2. Utilizar en cualquier parte del DOM --&gt;
+&lt;animated-svg-icon style="width: 200px; height: 200px;"&gt;&lt;/animated-svg-icon&gt;</code></pre>
+        </div>
+
+        <!-- Sprite Symbol -->
+        <div class="card-box">
+          <h3>Sprite Symbol (&lt;symbol&gt; con &lt;use&gt;)</h3>
+          <p>La solución más eficiente para sistemas de iconos donde la misma figura se repite en múltiples vistas:</p>
+          <pre><code>&lt;!-- Coloca este bloque una sola vez al inicio de tu body --&gt;
+&lt;svg xmlns="http://www.w3.org/2000/svg" style="display: none;"&gt;
+  &lt;symbol id="icono-animado" viewBox="0 0 250 220"&gt;
+    &lt;style&gt;
+      @keyframes svgMotion { ... }
+      .animated-target { animation: svgMotion 2.5s ease-in-out infinite; }
+    &lt;/style&gt;
+    &lt;g class="animated-target"&gt;...&lt;/g&gt;
+  &lt;/symbol&gt;
+&lt;/svg&gt;
+
+&lt;!-- Invócalo tantas veces como quieras sin duplicar los vectores --&gt;
+&lt;svg width="48" height="48"&gt;&lt;use href="#icono-animado"/&gt;&lt;/svg&gt;
+&lt;svg width="64" height="64"&gt;&lt;use href="#icono-animado"/&gt;&lt;/svg&gt;</code></pre>
+        </div>
+      </section>
+
+      <!-- Sección 9 -->
+      <section id="animaciones-custom">
+        <h2>9. Creación de Keyframes CSS Personalizados</h2>
+        <p>Puedes expandir el catálogo definiendo tus propias reglas <code>@keyframes</code> en el editor lateral:</p>
+
+        <div class="card-box">
+          <h3>Estructura recomendada</h3>
+          <p>
+            Al redactar un keyframe, asigna el nombre <code>customAnim</code>. El motor lo mapeará automáticamente tanto en el lienzo como en la exportación:
+          </p>
+          <pre><code>@keyframes customAnim {
+  0% {
+    transform: scale(1) rotate(0deg);
+  }
+  30% {
+    transform: scale(1.18) rotate(-6deg);
+    filter: drop-shadow(0 0 15px rgba(56, 189, 248, 0.6));
+  }
+  60% {
+    transform: scale(0.95) rotate(4deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+}</code></pre>
+          <p>
+            Tus animaciones se guardan de forma persistente en <code>localStorage</code> y puedes compartirlas o respaldarlas en un archivo <code>.json</code> con los botones <em>Exportar JSON</em> e <em>Importar JSON</em>.
+          </p>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <footer>
+    <p>SVG Motion Studio Pro v4.0 &middot; Licencia MIT &middot; Creado por SILOGICA (Borja Fernandez)</p>
+  </footer>
+
+</body>
+</html>
+

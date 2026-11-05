@@ -1,0 +1,51 @@
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor & IDE files
+.vscode/*
+!.vscode/mcp.json
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# vexp generated / local files (tracked internal config stays tracked)
+.vexp/index.db*
+.vexp/index.lock
+.vexp/manifest.json
+.vexp/*.log*
+.vexp/daemon.*
+.vexp/healthy
+.vexp/coverage.json
+.vexp/backups/
+.vexp/mcp.port
+.vexp/mcp.token
+.vexp/idle*
+
+# Environment & Secrets
+.env
+.env.*
+*.env
+*.local
+credentials.json
+secrets.*
+
+# Client assets, drafts & raw media
+*.pdf
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.raw
+*.psd
+*.ai
+*.eps
+*.tmp
+*.bak
+*.draft
+*~
+
+# Temporary / Node
+node_modules/
+*.log
