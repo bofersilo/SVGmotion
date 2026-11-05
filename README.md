@@ -156,6 +156,18 @@ vexp doctor
 
 ---
 
+## 🛠️ Herramienta Local: Vectorizador Multicapa (PNG/JPG a SVG)
+
+Para flujos de trabajo de diseño y preparación de vectores en desarrollo local, el repositorio incluye un módulo autocontenido en [`tools/vectorizer/`](tools/vectorizer/):
+- **Motor Color & Capas:** Impulsado por `@visioncortex/vtracer` para extraer curvas Bézier separadas por color con identificadores correlativos (`id="layer-color-X"`), totalmente compatible con el Inspector de Capas, Stagger y Color Swapper.
+- **Motor Silueta Monocromo:** Impulsado por `potrace` para logos e iconos monocromos de 1 tinta con precisión matemática.
+- **Micro-UI Web Local (`http://localhost:3333`):** Interfaz visual para previsualizar antes/después, ajustar sliders de cuantización y abrir el vector directamente en SVG Motion Studio.
+- **Watcher Automático:** Monitorea la carpeta `tools/vectorizer/input/` y deposita los SVGs saneados en `output/`.
+
+> Consulta la [Guía Completa del Vectorizador](tools/vectorizer/README.md) para instrucciones de uso.
+
+---
+
 ## 📁 Estructura del Proyecto
 
 ```text
@@ -169,6 +181,8 @@ SVGmotion/
 ├── index.html                 # Aplicación principal v4.0 Studio Suite
 ├── docs.html                  # Manual técnico & guía de referencia
 ├── svg-motion-studio-pro.html # Copia sincronizada del estudio
+├── tools/
+│   └── vectorizer/            # Módulo local de vectorización PNG/JPG a SVG (vtracer + potrace)
 ├── AGENTS.md                  # Directrices para agentes inteligentes
 ├── LICENSE                    # Licencia MIT
 ├── README.md                  # Documentación v4.0 Studio Suite

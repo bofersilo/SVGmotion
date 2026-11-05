@@ -1,0 +1,25 @@
+{
+  "name": "svgmotion-vectorizer",
+  "version": "1.0.0",
+  "description": "Herramienta local de vectorización profesional (PNG/JPG a SVG) con soporte multicapa para SVG Motion Studio Pro",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "ui": "node server.js",
+    "watch": "node watcher.js",
+    "cli": "node cli.js"
+  },
+  "keywords": [
+    "svg",
+    "vectorizer",
+    "vtracer",
+    "potrace",
+    "svgmotion"
+  ],
+  "author": "SILOGICA",
+  "license": "MIT",
+  "dependencies": {
+    "@visioncortex/vtracer": "^1.0.0-alpha.4",
+    "potrace": "^2.1.8"
+  }
+}

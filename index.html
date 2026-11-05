@@ -2243,6 +2243,19 @@ ${ruleCss}
       loadCustomAnimations();
       applyCurrentAnimation();
       updateExportPreview();
+
+      // Comprobar si hay un SVG transferido desde el vectorizador local
+      try {
+        if (typeof localStorage !== 'undefined') {
+          const pendingSvg = localStorage.getItem('svgmotion_pending_svg');
+          if (pendingSvg) {
+            localStorage.removeItem('svgmotion_pending_svg');
+            setSvg(pendingSvg);
+          }
+        }
+      } catch (err) {
+        console.warn('No se pudo verificar svgmotion_pending_svg:', err);
+      }
     });
   </script>
 </body>

@@ -46,6 +46,14 @@ secrets.*
 *.draft
 *~
 
+# Tools / Vectorizer local scratch & I/O
+tools/vectorizer/input/*
+!tools/vectorizer/input/.gitkeep
+tools/vectorizer/output/*
+!tools/vectorizer/output/.gitkeep
+tools/vectorizer/temp/
+tools/vectorizer/*.tmp
+
 # Temporary / Node
 node_modules/
 *.log

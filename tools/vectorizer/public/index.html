@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SVGmotion Vectorizer Studio (Local Dev Tool)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0f17;
+      --card-bg: rgba(20, 27, 41, 0.88);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --accent: #38bdf8;
+      --accent-glow: rgba(56, 189, 248, 0.3);
+      --indigo: #6366f1;
+      --gold: #f59e0b;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --radius: 12px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.08) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(99, 102, 241, 0.08) 0px, transparent 50%);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      padding: 0.85rem 2rem;
+      border-bottom: 1px solid var(--card-border);
+      backdrop-filter: blur(12px);
+      background: rgba(11, 15, 23, 0.9);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-weight: 700;
+      font-size: 1.1rem;
+      text-decoration: none;
+      color: var(--text);
+    }
+
+    .brand-icon-core {
+      width: 28px;
+      height: 28px;
+      filter: drop-shadow(0 2px 6px rgba(56, 189, 248, 0.4));
+      transition: transform 0.3s ease;
+    }
+    .brand:hover .brand-icon-core {
+      transform: scale(1.1) rotate(6deg);
+    }
+
+    .badge-tool {
+      font-size: 0.68rem;
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(99, 102, 241, 0.2));
+      color: var(--accent);
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      font-weight: 700;
+    }
+
+    .header-links {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .btn-nav {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text);
+      text-decoration: none;
+      padding: 0.45rem 0.9rem;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+      background: rgba(255, 255, 255, 0.04);
+      transition: all 0.2s ease;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .btn-nav:hover {
+      border-color: var(--accent);
+      background: rgba(56, 189, 248, 0.1);
+      transform: translateY(-1px);
+    }
+    .btn-nav.primary {
+      background: linear-gradient(135deg, var(--accent), var(--indigo));
+      border: none;
+      color: #0b0f17;
+      font-weight: 700;
+    }
+
+    /* Layout principal */
+    main {
+      flex: 1;
+      padding: 1.5rem 2rem;
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      gap: 1.5rem;
+      max-width: 1600px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    @media (max-width: 1024px) {
+      main { grid-template-columns: 1fr; }
+    }
+
+    .panel {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .panel-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      padding-bottom: 0.75rem;
+    }
+
+    /* Drop Zone */
+    .drop-zone {
+      border: 2px dashed rgba(255, 255, 255, 0.15);
+      border-radius: 10px;
+      padding: 1.5rem 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: rgba(255, 255, 255, 0.02);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .drop-zone:hover, .drop-zone.dragover {
+      border-color: var(--accent);
+      background: rgba(56, 189, 248, 0.05);
+    }
+    .drop-zone svg {
+      stroke: var(--accent);
+    }
+
+    .image-preview-mini {
+      display: none;
+      width: 100%;
+      height: 90px;
+      object-fit: contain;
+      background: #06090e;
+      border-radius: 6px;
+      margin-top: 0.5rem;
+    }
+
+    /* Engine Selector */
+    .engine-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+    }
+    .engine-btn {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--card-border);
+      padding: 0.65rem 0.5rem;
+      border-radius: 8px;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-align: center;
+      transition: all 0.2s ease;
+    }
+    .engine-btn.active {
+      border-color: var(--accent);
+      background: rgba(56, 189, 248, 0.12);
+      color: var(--accent);
+    }
+
+    /* Presets */
+    .preset-row {
+      display: flex;
+      gap: 0.35rem;
+      flex-wrap: wrap;
+    }
+    .preset-pill {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--card-border);
+      padding: 0.3rem 0.6rem;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: all 0.2s ease;
+    }
+    .preset-pill:hover, .preset-pill.active {
+      border-color: var(--accent);
+      color: var(--text);
+      background: rgba(56, 189, 248, 0.15);
+    }
+
+    /* Form groups & sliders */
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .control-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+    .control-header span.val {
+      color: var(--accent);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+      outline: none;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      box-shadow: 0 0 8px var(--accent-glow);
+    }
+
+    select, input[type="text"] {
+      width: 100%;
+      background: rgba(13, 19, 33, 0.9);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      padding: 0.55rem 0.75rem;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.8rem;
+      outline: none;
+    }
+    select:focus, input[type="text"]:focus {
+      border-color: var(--accent);
+    }
+
+    /* Action button */
+    .btn-action {
+      background: linear-gradient(135deg, var(--accent), var(--indigo));
+      border: none;
+      color: #0b0f17;
+      font-weight: 800;
+      font-size: 0.88rem;
+      padding: 0.85rem;
+      border-radius: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 15px rgba(56, 189, 248, 0.25);
+    }
+    .btn-action:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(56, 189, 248, 0.4);
+    }
+    .btn-action:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Vista de Previsualización */
+    .stage-card {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      height: 100%;
+    }
+
+    .tabs-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 0.5rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .tab-btn-group {
+      display: flex;
+      gap: 0.4rem;
+    }
+    .tab-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    .tab-btn.active {
+      background: rgba(56, 189, 248, 0.12);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .preview-canvas {
+      flex: 1;
+      min-height: 420px;
+      background-color: #070c14;
+      background-image: 
+        linear-gradient(45deg, #0e1626 25%, transparent 25%), 
+        linear-gradient(-45deg, #0e1626 25%, transparent 25%), 
+        linear-gradient(45deg, transparent 75%, #0e1626 75%), 
+        linear-gradient(-45deg, transparent 75%, #0e1626 75%);
+      background-size: 20px 20px;
+      background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+      border-radius: 10px;
+      border: 1px solid var(--card-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      padding: 1.5rem;
+    }
+
+    .preview-canvas svg {
+      max-width: 100%;
+      max-height: 480px;
+      width: auto;
+      height: auto;
+      filter: drop-shadow(0 10px 25px rgba(0,0,0,0.5));
+    }
+
+    .code-view {
+      display: none;
+      width: 100%;
+      height: 100%;
+      min-height: 420px;
+      background: #090d16;
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 1rem;
+      color: #38bdf8;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      overflow: auto;
+      white-space: pre;
+    }
+
+    .metrics-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      background: rgba(13, 19, 33, 0.7);
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+    }
+
+    .stat-pill {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.76rem;
+      color: var(--text-muted);
+    }
+    .stat-pill strong {
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .palette-swatches {
+      display: flex;
+      gap: 0.35rem;
+      align-items: center;
+    }
+    .color-chip {
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .color-chip:hover {
+      transform: scale(1.3);
+    }
+
+    .actions-footer {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-footer {
+      flex: 1;
+      padding: 0.65rem 1rem;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      border: 1px solid var(--card-border);
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      transition: all 0.2s ease;
+    }
+    .btn-footer:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+    .btn-footer.highlight {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.15), rgba(99, 102, 241, 0.25));
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: #0f172a;
+      border: 1px solid var(--accent);
+      color: #fff;
+      padding: 0.75rem 1.25rem;
+      border-radius: 8px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      font-size: 0.85rem;
+      font-weight: 600;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 1000;
+    }
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="#" class="brand">
+      <svg class="brand-icon-core" viewBox="0 0 260 230" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g>
+          <polygon points="130,35 199,75 130,115 61,75" fill="#38bdf8"/>
+          <polygon points="61,75 130,115 130,195 61,155" fill="#6366f1"/>
+          <polygon points="130,115 199,75 199,155 130,195" fill="#4338ca"/>
+          <polygon points="130,75 165,95 130,115 95,95" fill="#7dd3fc" opacity="0.75"/>
+          <polygon points="130,95 148,105 148,125 130,135 112,125 112,105" fill="#f59e0b"/>
+          <circle cx="130" cy="115" r="8" fill="#fbbf24"/>
+          <polygon points="130,15 142,28 118,28" fill="#38bdf8"/>
+          <polygon points="42,115 54,103 54,127" fill="#6366f1"/>
+          <polygon points="218,115 206,103 206,127" fill="#f59e0b"/>
+        </g>
+      </svg>
+      <span>SVGmotion Vectorizer Studio</span>
+      <span class="badge-tool">Local Dev Tool</span>
+    </a>
+
+    <div class="header-links">
+      <a href="/studio" target="_blank" class="btn-nav primary" title="Abrir la suite principal SVG Motion Studio Pro">
+        🎨 Abrir SVG Motion Studio Pro
+      </a>
+      <a href="https://github.com/bofersilo/SVGmotion" target="_blank" rel="noopener noreferrer" class="btn-nav">
+        GitHub
+      </a>
+    </div>
+  </header>
+
+  <main>
+    <!-- Panel Izquierdo: Controles -->
+    <div class="panel">
+      <div class="panel-title">
+        <span>⚙️ Configuración de Vectorización</span>
+      </div>
+
+      <!-- Zona Drop -->
+      <div class="drop-zone" id="dropZone">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="17 8 12 3 7 8"></polyline>
+          <line x1="12" y1="3" x2="12" y2="15"></line>
+        </svg>
+        <span style="font-size: 0.85rem; font-weight: 700;">Arrastra tu imagen PNG / JPG</span>
+        <span style="font-size: 0.72rem; color: var(--text-muted);">o haz clic para explorar en tu equipo</span>
+        <input type="file" id="fileInput" accept=".png,.jpg,.jpeg,.webp,.bmp" style="display: none;">
+        <img id="imagePreviewMini" class="image-preview-mini" alt="Previsualización miniatura">
+        <span id="fileNameLabel" style="font-size: 0.72rem; color: var(--accent); display: none;"></span>
+      </div>
+
+      <!-- Selector de Motor -->
+      <div class="control-group">
+        <div class="control-header">Motor de Vectorización:</div>
+        <div class="engine-grid">
+          <div class="engine-btn active" id="btnEngineVtracer" data-engine="vtracer">
+            🎨 vtracer (Color & Capas)
+          </div>
+          <div class="engine-btn" id="btnEnginePotrace" data-engine="potrace">
+            ⚡ potrace (Silueta 1 Tinta)
+          </div>
+        </div>
+      </div>
+
+      <!-- Presets -->
+      <div class="control-group">
+        <div class="control-header">Presets Rápidos:</div>
+        <div class="preset-row">
+          <span class="preset-pill active" data-preset="logo">💎 Logo Vector Art</span>
+          <span class="preset-pill" data-preset="icon">⚡ Icono</span>
+          <span class="preset-pill" data-preset="photo">🖼️ Ilustración Rica</span>
+          <span class="preset-pill" data-preset="polygon">📐 Geométrico</span>
+        </div>
+      </div>
+
+      <!-- Slider Colores -->
+      <div class="control-group" id="groupColors">
+        <div class="control-header">
+          <span>Número de Colores (Cuantización):</span>
+          <span class="val" id="valColors">8 colores</span>
+        </div>
+        <input type="range" id="sliderColors" min="2" max="16" value="8">
+      </div>
+
+      <!-- Modo de Trazado -->
+      <div class="control-group">
+        <div class="control-header">Modo de Trazado de Curvas:</div>
+        <select id="selectMode">
+          <option value="spline">Curvas Spline / Bézier (Suaves)</option>
+          <option value="polygon">Polígonos (Líneas rectas / Sharp)</option>
+        </select>
+      </div>
+
+      <!-- Filtro de Ruido -->
+      <div class="control-group">
+        <div class="control-header">
+          <span>Filtro de Ruido / Manchas:</span>
+          <span class="val" id="valSpeckle">4 px</span>
+        </div>
+        <input type="range" id="sliderSpeckle" min="0" max="40" value="4">
+      </div>
+
+      <!-- Suavizado de Esquinas -->
+      <div class="control-group" id="groupCorner">
+        <div class="control-header">
+          <span>Suavizado de Esquinas:</span>
+          <span class="val" id="valCorner">60</span>
+        </div>
+        <input type="range" id="sliderCorner" min="20" max="120" value="60">
+      </div>
+
+      <!-- Color de Relleno (para potrace) -->
+      <div class="control-group" id="groupPotraceColor" style="display: none;">
+        <div class="control-header">Color de Tinta Monocromo:</div>
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+          <input type="color" id="inputColor" value="#0f172a" style="border: none; background: transparent; width: 40px; height: 35px; cursor: pointer;">
+          <input type="text" id="inputColorHex" value="#0f172a" style="font-family: 'JetBrains Mono', monospace;">
+        </div>
+      </div>
+
+      <!-- Botón Procesar -->
+      <button class="btn-action" id="btnVectorize">
+        ⚡ Vectorizar Imagen
+      </button>
+    </div>
+
+    <!-- Panel Derecho: Previsualización -->
+    <div class="panel stage-card">
+      <div class="tabs-header">
+        <div class="tab-btn-group">
+          <button class="tab-btn active" data-tab="vector">👁️ SVG Vectorizado</button>
+          <button class="tab-btn" data-tab="raster">🖼️ Raster Original</button>
+          <button class="tab-btn" data-tab="code">💻 Código SVG</button>
+        </div>
+        <div id="statusBadge" style="font-size: 0.75rem; color: var(--accent); font-weight: 600;">Listo para vectorizar</div>
+      </div>
+
+      <div class="preview-canvas" id="previewCanvas">
+        <div id="emptyHint" style="color: var(--text-muted); font-size: 0.9rem; text-align: center;">
+          <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">✨</div>
+          Carga o arrastra una imagen a la izquierda para generar su vector
+        </div>
+        <div id="vectorContainer" style="display: none; width: 100%; height: 100%; align-items: center; justify-content: center;"></div>
+        <img id="rasterPreviewLarge" style="display: none; max-width: 100%; max-height: 480px; object-fit: contain; border-radius: 8px;" alt="Raster original">
+        <textarea id="codeView" class="code-view" readonly></textarea>
+      </div>
+
+      <div class="metrics-bar" id="metricsBar" style="display: none;">
+        <div class="stat-pill">⏱️ Tiempo: <strong id="statElapsed">0ms</strong></div>
+        <div class="stat-pill">📐 Dimensiones: <strong id="statDimensions">0x0px</strong></div>
+        <div class="stat-pill">🧩 Capas: <strong id="statLayers">0</strong></div>
+        <div class="stat-pill">💾 Tamaño: <strong id="statSize">0 KB</strong></div>
+        <div class="stat-pill">
+          <span>Paleta:</span>
+          <div class="palette-swatches" id="paletteSwatches"></div>
+        </div>
+      </div>
+
+      <div class="actions-footer">
+        <button class="btn-footer" id="btnCopySvg" disabled>
+          📋 Copiar SVG
+        </button>
+        <button class="btn-footer" id="btnDownloadSvg" disabled>
+          💾 Descargar .SVG
+        </button>
+        <button class="btn-footer" id="btnSaveToOutput" disabled>
+          📁 Guardar en output/
+        </button>
+        <button class="btn-footer highlight" id="btnOpenInStudio" disabled>
+          🚀 Abrir en SVG Motion Studio
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <div class="toast" id="toast">Mensaje de notificación</div>
+
+  <script>
+    let currentImageBase64 = null;
+    let currentSvgResult = null;
+    let currentEngine = 'vtracer';
+    let currentFileName = 'imagen';
+
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+    const imagePreviewMini = document.getElementById('imagePreviewMini');
+    const fileNameLabel = document.getElementById('fileNameLabel');
+
+    const sliderColors = document.getElementById('sliderColors');
+    const valColors = document.getElementById('valColors');
+    const sliderSpeckle = document.getElementById('sliderSpeckle');
+    const valSpeckle = document.getElementById('valSpeckle');
+    const sliderCorner = document.getElementById('sliderCorner');
+    const valCorner = document.getElementById('valCorner');
+    const selectMode = document.getElementById('selectMode');
+    const inputColor = document.getElementById('inputColor');
+    const inputColorHex = document.getElementById('inputColorHex');
+
+    const btnEngineVtracer = document.getElementById('btnEngineVtracer');
+    const btnEnginePotrace = document.getElementById('btnEnginePotrace');
+    const groupColors = document.getElementById('groupColors');
+    const groupCorner = document.getElementById('groupCorner');
+    const groupPotraceColor = document.getElementById('groupPotraceColor');
+
+    const btnVectorize = document.getElementById('btnVectorize');
+    const statusBadge = document.getElementById('statusBadge');
+    const emptyHint = document.getElementById('emptyHint');
+    const vectorContainer = document.getElementById('vectorContainer');
+    const rasterPreviewLarge = document.getElementById('rasterPreviewLarge');
+    const codeView = document.getElementById('codeView');
+    const metricsBar = document.getElementById('metricsBar');
+
+    const btnCopySvg = document.getElementById('btnCopySvg');
+    const btnDownloadSvg = document.getElementById('btnDownloadSvg');
+    const btnSaveToOutput = document.getElementById('btnSaveToOutput');
+    const btnOpenInStudio = document.getElementById('btnOpenInStudio');
+
+    // Drag and Drop
+    dropZone.addEventListener('click', () => fileInput.click());
+    dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
+    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('dragover');
+      if (e.dataTransfer && e.dataTransfer.files.length > 0) {
+        handleFile(e.dataTransfer.files[0]);
+      }
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files && e.target.files.length > 0) {
+        handleFile(e.target.files[0]);
+      }
+    });
+
+    function handleFile(file) {
+      if (!file.type.startsWith('image/')) {
+        showToast('Por favor selecciona una imagen válida (PNG, JPG, WEBP)');
+        return;
+      }
+      currentFileName = file.name.replace(/\.[^/.]+$/, '');
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        currentImageBase64 = e.target.result;
+        imagePreviewMini.src = currentImageBase64;
+        imagePreviewMini.style.display = 'block';
+        rasterPreviewLarge.src = currentImageBase64;
+        fileNameLabel.textContent = `Archivo: ${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+        fileNameLabel.style.display = 'block';
+        statusBadge.textContent = 'Imagen cargada. Haz clic en Vectorizar.';
+        // Auto-vectorizar al cargar
+        doVectorize();
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // Engine switch
+    btnEngineVtracer.addEventListener('click', () => setEngine('vtracer'));
+    btnEnginePotrace.addEventListener('click', () => setEngine('potrace'));
+
+    function setEngine(eng) {
+      currentEngine = eng;
+      if (eng === 'vtracer') {
+        btnEngineVtracer.classList.add('active');
+        btnEnginePotrace.classList.remove('active');
+        groupColors.style.display = 'flex';
+        groupCorner.style.display = 'flex';
+        groupPotraceColor.style.display = 'none';
+      } else {
+        btnEnginePotrace.classList.add('active');
+        btnEngineVtracer.classList.remove('active');
+        groupColors.style.display = 'none';
+        groupCorner.style.display = 'none';
+        groupPotraceColor.style.display = 'flex';
+      }
+    }
+
+    // Sliders feedback
+    sliderColors.addEventListener('input', () => valColors.textContent = `${sliderColors.value} colores`);
+    sliderSpeckle.addEventListener('input', () => valSpeckle.textContent = `${sliderSpeckle.value} px`);
+    sliderCorner.addEventListener('input', () => valCorner.textContent = sliderCorner.value);
+    inputColor.addEventListener('input', () => inputColorHex.value = inputColor.value);
+    inputColorHex.addEventListener('input', () => inputColor.value = inputColorHex.value);
+
+    // Presets
+    document.querySelectorAll('.preset-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        document.querySelectorAll('.preset-pill').forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        const p = pill.dataset.preset;
+        if (p === 'logo') {
+          setEngine('vtracer');
+          sliderColors.value = 8; valColors.textContent = '8 colores';
+          selectMode.value = 'spline';
+          sliderSpeckle.value = 4; valSpeckle.textContent = '4 px';
+          sliderCorner.value = 60; valCorner.textContent = '60';
+        } else if (p === 'icon') {
+          setEngine('potrace');
+          selectMode.value = 'spline';
+          sliderSpeckle.value = 2; valSpeckle.textContent = '2 px';
+        } else if (p === 'photo') {
+          setEngine('vtracer');
+          sliderColors.value = 16; valColors.textContent = '16 colores';
+          selectMode.value = 'spline';
+          sliderSpeckle.value = 2; valSpeckle.textContent = '2 px';
+          sliderCorner.value = 40; valCorner.textContent = '40';
+        } else if (p === 'polygon') {
+          setEngine('vtracer');
+          sliderColors.value = 8; valColors.textContent = '8 colores';
+          selectMode.value = 'polygon';
+          sliderSpeckle.value = 6; valSpeckle.textContent = '6 px';
+          sliderCorner.value = 90; valCorner.textContent = '90';
+        }
+        if (currentImageBase64) doVectorize();
+      });
+    });
+
+    // Vectorize API call
+    btnVectorize.addEventListener('click', () => doVectorize());
+
+    async function doVectorize() {
+      if (!currentImageBase64) {
+        showToast('Primero arrastra o selecciona una imagen');
+        return;
+      }
+
+      btnVectorize.disabled = true;
+      btnVectorize.innerHTML = '⏳ Procesando trazado...';
+      statusBadge.textContent = 'Vectorizando con algoritmos Bézier...';
+
+      try {
+        const payload = {
+          image: currentImageBase64,
+          engine: currentEngine,
+          maxColors: sliderColors.value,
+          mode: selectMode.value,
+          filterSpeckle: sliderSpeckle.value,
+          cornerThreshold: sliderCorner.value,
+          color: inputColor.value
+        };
+
+        const res = await fetch('/api/vectorize', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+        if (!data.success) throw new Error(data.error || 'Error desconocido');
+
+        currentSvgResult = data;
+        renderResult(data);
+        showToast(`✔ Vectorizado con éxito en ${data.elapsedMs}ms (${data.layersCount} capas)`);
+      } catch (err) {
+        console.error(err);
+        showToast('Error en la vectorización: ' + err.message);
+        statusBadge.textContent = 'Error en el proceso';
+      } finally {
+        btnVectorize.disabled = false;
+        btnVectorize.innerHTML = '⚡ Vectorizar Imagen';
+      }
+    }
+
+    function renderResult(data) {
+      emptyHint.style.display = 'none';
+      vectorContainer.innerHTML = data.svg;
+      vectorContainer.style.display = 'flex';
+      codeView.value = data.svg;
+
+      // Actualizar metricas
+      document.getElementById('statElapsed').textContent = `${data.elapsedMs}ms`;
+      document.getElementById('statDimensions').textContent = `${data.width}x${data.height}px`;
+      document.getElementById('statLayers').textContent = `${data.layersCount} (id="layer-color-*")`;
+      document.getElementById('statSize').textContent = `${(data.sizeBytes / 1024).toFixed(1)} KB`;
+
+      // Paleta
+      const palContainer = document.getElementById('paletteSwatches');
+      palContainer.innerHTML = '';
+      (data.palette || []).forEach(hex => {
+        const chip = document.createElement('div');
+        chip.className = 'color-chip';
+        chip.style.backgroundColor = hex;
+        chip.title = `Color: ${hex} (clic para copiar)`;
+        chip.addEventListener('click', () => {
+          navigator.clipboard.writeText(hex);
+          showToast(`Color ${hex} copiado`);
+        });
+        palContainer.appendChild(chip);
+      });
+
+      metricsBar.style.display = 'flex';
+      statusBadge.textContent = `✔ Vectorizado (${data.layersCount} capas)`;
+
+      btnCopySvg.disabled = false;
+      btnDownloadSvg.disabled = false;
+      btnSaveToOutput.disabled = false;
+      btnOpenInStudio.disabled = false;
+
+      // Volver a pestaña vector
+      switchTab('vector');
+    }
+
+    // Tabs
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+    });
+
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+      vectorContainer.style.display = tab === 'vector' ? 'flex' : 'none';
+      rasterPreviewLarge.style.display = tab === 'raster' ? 'block' : 'none';
+      codeView.style.display = tab === 'code' ? 'block' : 'none';
+    }
+
+    // Acciones de Exportación
+    btnCopySvg.addEventListener('click', () => {
+      if (!currentSvgResult) return;
+      navigator.clipboard.writeText(currentSvgResult.svg).then(() => {
+        showToast('✔ SVG copiado al portapapeles');
+      });
+    });
+
+    btnDownloadSvg.addEventListener('click', () => {
+      if (!currentSvgResult) return;
+      const blob = new Blob([currentSvgResult.svg], { type: 'image/svg+xml' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${currentFileName}-vector.svg`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast(`✔ Descargado como ${currentFileName}-vector.svg`);
+    });
+
+    btnSaveToOutput.addEventListener('click', async () => {
+      if (!currentSvgResult) return;
+      try {
+        const res = await fetch('/api/save', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: currentFileName, svg: currentSvgResult.svg })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast(`✔ Guardado en ${data.path}`);
+        } else {
+          throw new Error(data.error);
+        }
+      } catch (err) {
+        showToast('Error guardando en output/: ' + err.message);
+      }
+    });
+
+    btnOpenInStudio.addEventListener('click', () => {
+      if (!currentSvgResult) return;
+      try {
+        localStorage.setItem('svgmotion_pending_svg', currentSvgResult.svg);
+        const win = window.open('/studio', '_blank');
+        if (!win) {
+          window.location.href = '/studio';
+        }
+        showToast('🚀 Abriendo en SVG Motion Studio Pro...');
+      } catch (err) {
+        showToast('Error al transferir a Studio: ' + err.message);
+      }
+    });
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3500);
+    }
+  </script>
+</body>
+</html>
